@@ -17,8 +17,13 @@ int readInternetFromFile(char * fileName) {
 
 
     int * allElements = (int *)malloc(500 * sizeof(int));
+    int reallocs = 0;
 
     while (fscanf(input_file, "%d %d %d", &tailIdentifier, &headIdentifier, &providerOfTheHead) == 3 ) {
+        if (edges >= reallocs * 500) {
+            reallocs ++;
+            allElements = (int *)realloc(allElements, reallocs * 500 * sizeof(int)); 
+        }
         allElements[edges++] = tailIdentifier;
     }
 
@@ -37,7 +42,7 @@ int readInternetFromFile(char * fileName) {
 
     printf("Graph is connected %d\n", graphIsConnected(graph));
 
-    printGraph(graph);
+    // printGraph(graph);
 }
 
 
