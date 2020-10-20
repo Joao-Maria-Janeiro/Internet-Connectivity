@@ -35,6 +35,7 @@ typedef struct AdjList {
 typedef struct Graph {
     int V;
     int E;
+    int listSize;
     struct AdjList* array;
 } Graph;
 
@@ -48,9 +49,9 @@ void countSort(int arr[], int n, int exp);
 void radixsort(int arr[], int n);
 void addEdge(struct Graph* graph, int node, int neighour, int hierarchy);
 struct AdjListNode* newAdjListNode(int node, int neighbour, int hierarchy);
-struct Graph* createGraph(int V, int E);
+struct Graph* createGraph(int V, int E, int maxElement);
 void printGraph(Graph* graph);
-
+int get_biggest_prime(int n);
 
 
 #endif

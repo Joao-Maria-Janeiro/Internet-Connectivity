@@ -18,11 +18,15 @@ int readInternetFromFile(char * fileName) {
 
     int * allElements = (int *)malloc(500 * sizeof(int));
     int reallocs = 0;
+    int maxElement = 0;
 
     while (fscanf(input_file, "%d %d %d", &tailIdentifier, &headIdentifier, &providerOfTheHead) == 3 ) {
         if (edges >= reallocs * 500) {
             reallocs ++;
             allElements = (int *)realloc(allElements, reallocs * 500 * sizeof(int)); 
+        }
+        if (tailIdentifier > maxElement) {
+            maxElement = tailIdentifier;
         }
         allElements[edges++] = tailIdentifier;
     }
@@ -33,22 +37,32 @@ int readInternetFromFile(char * fileName) {
 
     int nodes = countDistinctElements(allElements, edges); // Radix Sort is O(n)
 
-    struct Graph* graph = createGraph(nodes, edges/2);
+    struct Graph* graph = createGraph(nodes, edges/2, maxElement);
+    
 
     while (fscanf(input_file, "%d %d %d", &tailIdentifier, &headIdentifier, &providerOfTheHead) == 3 ) {
         addEdge(graph, tailIdentifier, headIdentifier, providerOfTheHead);
     }
     fclose(input_file);
 
-    printf("Graph is connected %d\n", graphIsConnected(graph));
 
     // printGraph(graph);
+
+    int connected = graphIsConnected(graph);
+    
+    printf("Graph is connected %d\n", connected);
+
+    // // if (connected) {
+        bridges(graph);
+    // // }
+
+    // // printGraph(graph);
 }
 
 
 void printGraph(Graph* graph) {
     int v;
-    for (v = 0; v < graph->V; ++v) {
+    for (v = 0; v < graph->listSize; ++v) {
         struct AdjListNode* pCrawl = graph->array[v].head;
         if (pCrawl != NULL) {
             printf("\n Adjacency list of vertex %d\n head ", pCrawl->node);
@@ -167,7 +181,8 @@ void addEdge(struct Graph* graph, int node, int neighour, int hierarchy) {
     // Add an edge from src to dest.  A new node is added to the adjacency
     // list of src.  The node is added at the begining
     struct AdjListNode* newNode = newAdjListNode(node, neighour, hierarchy);
-    int index = getHash(graph, node);
+    // int index = getHash(graph, node);
+    int index = node;
     newNode->next = graph->array[index].head;
     graph->array[index].head = newNode;
 }
@@ -183,17 +198,18 @@ struct AdjListNode* newAdjListNode(int node, int neighbour, int hierarchy) {
 }
 
 // A utility function that creates a graph of V vertices
-struct Graph* createGraph(int V, int E) {
+struct Graph* createGraph(int V, int E, int maxElement) {
     struct Graph* graph = (struct Graph*) malloc(sizeof(struct Graph));
     graph->V = V;
     graph->E = E;
+    graph->listSize = (maxElement + 1);
  
-    // Create an array of adjacency lists.  Size of array will be V
-    graph->array = (struct AdjList*) malloc(V * sizeof(struct AdjList));
+    // Create an array of adjacency lists.  Size of array will be of the size of the biggest element
+    graph->array = (struct AdjList*) malloc((maxElement + 1) * sizeof(struct AdjList));
  
     // Initialize each adjacency list as empty by making head as NULL
     int i;
-    for (i = 0; i < V; ++i)
+    for (i = 0; i < (maxElement + 1); ++i)
         graph->array[i].head = NULL;
  
     return graph;

@@ -25,10 +25,10 @@ int checkFileName(int argc, char * fileName) {
         printf("Too many arguments\n");
         exit(1);
     }
-    if(strstr(fileName, ".inet") == 0) {
-        printf("Wrong file extension");
-        exit(1);
-    }
+    // if(strstr(fileName, ".inet") == 0) {
+    //     printf("Wrong file extension");
+    //     exit(1);
+    // }
 }
 
 
