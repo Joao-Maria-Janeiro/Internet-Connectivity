@@ -20,4 +20,7 @@ void bridges(Graph* g);
 int min(int a,int b);
 int bridgesUtil(Graph *g, int uIndex, int* isVisited, int* d,int* parent,int* l, Edge *bridgesArray);
 
+int isCommerciallyCyclic (Graph * graph);
+void isCommerciallyCyclicUtil(Graph * graph, int v, int * visited, int parent, int * cycleVertices, int * cycleFoundFlag, int * cycleFinished, int * firstNode);
+
 #endif

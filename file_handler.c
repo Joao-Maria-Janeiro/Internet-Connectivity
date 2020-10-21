@@ -54,6 +54,8 @@ int readInternetFromFile(char * fileName) {
 
     // // if (connected) {
         bridges(graph);
+    
+    printf("Graph has a commercial cycle %d\n", isCommerciallyCyclic(graph));
     // // }
 
     // // printGraph(graph);
