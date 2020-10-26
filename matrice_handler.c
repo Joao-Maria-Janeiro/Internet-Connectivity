@@ -324,11 +324,15 @@ int findTier0(Graph *graph, int * tier0Nodes){
 int commerciallyConnected(Graph *graph, int* tier0Nodes, int tier0Count){
 
   int leafNode;
-  int * visited = (int *)calloc(graph->listSize, sizeof(int));
+  int * visited = (int *)malloc(graph->listSize*sizeof(int));
+  for(int i= 0; i<graph->listSize; i++){
+    visited[i] = 0;
+  }
   
 
   if(tier0Count == 0){
     leafNode = findLeaf(graph);
+    printf("LEaf %d \n", leafNode);
     printf("leafNode = %d \n", leafNode);
     dfsLeaf(graph, leafNode, 3, 0, visited);
     for(int i = 0; i < graph->listSize; i++) {
@@ -343,11 +347,16 @@ int commerciallyConnected(Graph *graph, int* tier0Nodes, int tier0Count){
   
   if(tier0AllCon(graph, tier0Nodes, tier0Count) == 0) return 0;
 
-  visited = bfsTier0(graph, tier0Nodes[0]);
+  for(int i= 0; i<graph->listSize; i++){
+    printf("%d ", visited[i]);
+  }
+  printf("\n");
+  bfsTier0(graph, tier0Nodes[0], visited);
+  printf("visited[2] %d \n", visited[2] );
 
   for(int i = 0; i < graph->listSize; i++) {
     if(graph->array[i].head != NULL) {
-      if (visited[i] == 0)
+      if (visited[i] !=  1)
         return 0;
     }
   }
@@ -387,13 +396,14 @@ int  tier0AllCon(Graph *graph, int *tier0Nodes, int tier0Count){
 
 /*basicaly a bfs with restrictions regarding the moves
 tier0Nodes can only move downwards (to customers)*/
-int* bfsTier0(Graph *graph, int startVertex ){
+int* bfsTier0(Graph *graph, int startVertex, int *visited ){
   struct queue* q = createQueue(graph->V);
-  int * visited = (int *)malloc(graph->listSize * sizeof(int));
+  
   struct AdjListNode* startVertexNode = graph->array[startVertex].head;
 
   visited[startVertex] = 1;
   enqueue(q, startVertex, graph->V);
+
 
   while (!isEmpty(q)) {
         int currentNodeIndex = dequeue(q);
@@ -403,7 +413,7 @@ int* bfsTier0(Graph *graph, int startVertex ){
           int neighbourIndex = currentListNode->neighbour;
           if ((visited[neighbourIndex] != 1) &&(currentListNode->hierarchy == 1)) {
               visited[neighbourIndex] = 1;
-              printf("%d down\n", currentListNode->hierarchy);
+              printf("%d down currenode %d neighbour %d \n", currentListNode->hierarchy, currentListNode->node, currentListNode->neighbour);
               enqueue(q, neighbourIndex, graph->V);
           }
           if ((visited[neighbourIndex] != 1) &&(currentNodeIndex == startVertex) && (currentListNode->hierarchy == 2)) {
@@ -414,6 +424,7 @@ int* bfsTier0(Graph *graph, int startVertex ){
           currentListNode = currentListNode->next;
         }
     }
+    printf("onde é que tu vais maroto?\n");
     return visited;
 }
 
@@ -429,7 +440,7 @@ int findLeaf(Graph *graph){
     temp = graph->array[i].head;
     if(temp == NULL ) continue;
     while(temp != NULL){
-      if(temp->hierarchy == 1){
+      if((temp->hierarchy == 1) || (temp->hierarchy == 2)){
         leafFlag = 0;
         break;
       } 
@@ -471,17 +482,17 @@ void dfsLeaf(struct Graph* graph, int startVertex, int prevMove, int sideways, i
     int neighbour = temp->neighbour;
     printf("neighbour %d \t hierarchy %d \t prevMove = %d \t visited = %d \n", neighbour, temp->hierarchy, prevMove, visited[neighbour]);
     if (visited[neighbour] == 0)  {
-      if((temp->hierarchy == 3) && (prevMove == 3)){ //a node can't go up after moving downwards or sideways
+      if((temp->hierarchy == 3) && (prevMove == 3)){ //a node can only go up if its last move was also upwards UP
         printf("up\n");
         prevMove = temp->hierarchy;
         dfsLeaf(graph, neighbour, prevMove, sideways, visited);
       }
-      else if((temp->hierarchy == 2) && (prevMove == 3) && (sideways == 0) ){//a node can only move sideways once
+      else if((temp->hierarchy == 2) && (prevMove == 3) && (sideways == 0) ){//a node can only move sideways once SIDEWAYS
         sideways == 1;
         prevMove = temp->hierarchy;
         dfsLeaf(graph, neighbour, prevMove, sideways, visited);
       }
-      else if(temp->hierarchy == 1){ //a node can always move downwards
+      else if(temp->hierarchy == 1){ //a node can always move downwards DOWN
         printf("down\n");
         prevMove = temp->hierarchy;
         dfsLeaf(graph, neighbour, prevMove, sideways, visited);
