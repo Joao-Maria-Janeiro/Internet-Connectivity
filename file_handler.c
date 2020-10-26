@@ -53,12 +53,23 @@ int readInternetFromFile(char * fileName) {
     printf("Graph is connected %d\n", connected);
 
     // // if (connected) {
-        bridges(graph);
+    //bridges(graph);
     
-    printf("Graph has a commercial cycle %d\n", isCommerciallyCyclic(graph));
+    //printf("Graph has a commercial cycle %d\n", isCommerciallyCyclic(graph));
     // // }
 
-    // // printGraph(graph);
+    //printGraph(graph);
+    int * tier0Nodes;
+    int tier0Count = 0;
+    tier0Count = findTier0(graph, tier0Nodes);
+    for(int i= 0; i<tier0Count; i++){
+        printf("tier0node %d \n", tier0Nodes[i]);
+    }
+    printf("tier0count = %d \n", tier0Count);
+    if (connected == 1){
+        printf("COMERCIALMENTE CONEXA = %d \n", commerciallyConnected(graph, tier0Nodes, tier0Count));
+    }
+    printf("distinct nodes %d \n", nodes);
 }
 
 
