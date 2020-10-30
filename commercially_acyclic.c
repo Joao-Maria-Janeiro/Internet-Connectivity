@@ -28,7 +28,7 @@ int isCommerciallyCyclic (Graph * graph) {
         
     }
   }
-  printf("There were no cycles found, the graph is acyclic\n");
+  printf("No cycles found, the graph commercially is acyclic\n");
   free(visited);
   free(cycleVertices);
   free(leftTheWhile);

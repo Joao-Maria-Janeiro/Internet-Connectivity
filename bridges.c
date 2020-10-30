@@ -5,6 +5,7 @@ int min(int a,int b) {
 }
 
 void bridges(Graph* graph) {
+    int option = 0;
     int i = 0;
     int* d = (int*)malloc(sizeof(int)*graph->listSize);
     int* isVisited = (int*)malloc(sizeof(int)*graph->listSize);
@@ -27,11 +28,32 @@ void bridges(Graph* graph) {
         }
     }
 
-  printf("There are %d bridges\n",bridgesCount );
-  
+    printf("There are %d bridges\n",bridgesCount );
     
-  printf("Printing One Bridge: %d %d\n\n\n",graph->array[bridgesArray[0].u].head->node,graph->array[bridgesArray[0].v].head->node );
+    do{
+      printf("1: Print All Bridges\n2: Print One Bridge \n");
+      scanf("%d", &option);
 
+      
+
+      if(option == 1){
+        printf("Printing Bridges: \n" );
+        for(int k = 0; k<bridgesCount; k++){
+          temp = graph->array[bridgesArray[k].u].head;
+          printf("%d \t", temp->node);
+          temp = graph->array[bridgesArray[k].v].head;
+          printf("%d \n", temp->node);
+        }
+      }
+      else if(option==2){
+        printf("Printing Bridges: \n" );
+        printf("Bridge: %d %d\n", graph->array[bridgesArray[0].u].head->node, graph->array[bridgesArray[0].v].head->node);
+        
+      }
+      
+    }while(option != 1 && option != 2);
+
+  bridgesCount = 0;
   free(d);
   free(isVisited);
   free(parent);
