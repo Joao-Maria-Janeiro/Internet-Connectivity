@@ -11,8 +11,10 @@ int findTier0(Graph *graph, int * tier0Nodes);
 int commerciallyConnected(Graph *graph, int* tier0Ndes, int tier0Count);
 int  tier0AllCon(Graph *graph, int *tier0Nodes, int tier0Count);
 int * bfsTier0(Graph *graph, int startVertex, int* visited );
-int findLeaf(Graph *graph);
-void dfsLeaf(struct Graph* graph, int startVertex, int prevMove, int sideways, int *visited);
+void findAllCycles(Graph* graph, int u, int parent, int visited[], int marked[], int parents[], int *cyclenumber);
+void printCycles(int listSize, int marked[], int cyclenumber);
+// int findLeaf(Graph *graph);
+// void dfsLeaf(struct Graph* graph, int startVertex, int prevMove, int sideways, int *visited);
 
 
 #endif 

@@ -24,6 +24,8 @@ int findTier0(Graph *graph, int * tier0Nodes){
     //printf("t0flag = %d \t SAIU DO WHILE\n", t0Flag);
     if(t0Flag == 1){
       tier0Nodes[tier0Count] = i;
+      
+
       printf("Tier 0: %d\n", i);
       tier0Count++;
     }
@@ -31,31 +33,103 @@ int findTier0(Graph *graph, int * tier0Nodes){
   return tier0Count;
 }
 
+
+
+void findAllCycles(Graph* graph, int u, int parent, int visited[], int marked[], int parents[], int *cyclenumber){
+  
+  struct AdjListNode* temp = graph->array[u].head;
+
+  if(visited[u] == 2){
+    return;
+  }
+  
+  if( visited[u] == 1){
+    *cyclenumber ++;
+    int current = parent;
+    marked[current] = *cyclenumber;
+  
+    printf("Current fora While: %d %d\n", current, u);
+  
+    while(current != u){
+      current = parents[current];
+      marked[current] = *cyclenumber;
+      if(current != 0)
+        printf("Current dentro While: %d\n", current);
+    }
+    return;
+  }
+  parents[u] = parent;
+  visited[u] = 1;
+  
+  while (temp != NULL){ // We only need to find a single cycle, so once we find one we stop
+
+    printf("Parent: %d | Node: %d | Child: %d | Hierarchy: %d | Parents[u]: %d\n",  parent, u, temp->neighbour, temp->hierarchy, parents[u]);
+
+    // if(temp->hierarchy != 1) { // If it's a peer to peer it's not commercial
+    //   temp = temp->next;
+    //   continue;
+    // }
+
+    // If an adjacent is not visited, then recur for that adjacent 
+    //printf("Neighbour: %d\n",temp->neighbour);
+    if((temp->neighbour == parents[u]) ) {
+      temp = temp->next;
+
+      //isCommerciallyCyclicUtil(graph, temp->neighbour, visited, v, cycleVertices, cycleFoundFlag, cycleFinished, firstNode, leftTheWhile);
+      continue;  
+    } 
+    findAllCycles(graph,  temp->neighbour,  u,  visited,  marked,  parents,  cyclenumber); 
+    temp = temp->next;   
+  }
+  marked[u] == 2;
+}
+
+
+// Function to print the cycles 
+void printCycles(int listSize, int marked[], int cyclenumber) 
+{ 
+    int** cycles = (int**)malloc(cyclenumber* sizeof(int*));
+    int* currentCycleIndexes = (int*)malloc(cyclenumber * sizeof(int));
+
+    // push the edges that into the 
+    // cycle adjacency list 
+    for(int i = 0; i < cyclenumber; i++){
+      cycles[i] = (int*)malloc(listSize/2 * sizeof(int));
+    }
+
+    for (int i = 1; i <= listSize; i++) { 
+        if (marked[i] != 0) 
+            cycles[marked[i]][currentCycleIndexes[marked[i]]++] = i;
+         
+    } 
+  
+    // print all the vertex with same cycle 
+    for (int i = 1; i <= cyclenumber; i++) { 
+        // Print the i-th cycle 
+        printf("Cycle Number: %d\n ", i); 
+        for (int x = 0; x < currentCycleIndexes[i]; x++) 
+            printf("X: %d ", cycles[i][x]);
+        printf("\n");
+    } 
+} 
+
+// ###############################################
+// ###############################################
+// ###############################################
+// ###############################################
+
 int commerciallyConnected(Graph *graph, int* tier0Nodes, int tier0Count){
   
 
-  int leafNode;
   int * visited = (int *)malloc(graph->listSize*sizeof(int));
   for(int i= 0; i<graph->listSize; i++){
     visited[i] = 0;
   }
-  
 
-  if(tier0Count == 0){
-    leafNode = findLeaf(graph);
-    // printf("LEaf %d \n", leafNode);
-    // printf("leafNode = %d \n", leafNode);
-    dfsLeaf(graph, leafNode, 3, 0, visited);
-    for(int i = 0; i < graph->listSize; i++) {
-      if(graph->array[i].head != NULL) {
-        if (visited[i] == 0)
-          return 0;
-      }
-    }
-    return 1;
+  if( tier0Count == 0){
+      
   }
 
-  
   if(tier0AllCon(graph, tier0Nodes, tier0Count) == 0) return 0;
 
   
@@ -137,8 +211,16 @@ int* bfsTier0(Graph *graph, int startVertex, int *visited ){
     return visited;
 }
 
+
+
+
+
+
+
+
+
 /*tier0Nodes is an array that keeps the tier0Nodes by whichever order they are found*/
-int findLeaf(Graph *graph){
+/*int findLeaf(Graph *graph){
   struct AdjListNode* temp;
   int leafFlag = 1;
   int i = 0;
@@ -161,7 +243,7 @@ int findLeaf(Graph *graph){
   }
 
 }
-
+*/
 /*tries to access all nodes from the startLeaf
 Contrary to the Tier0's case, the moves permited this time are:
     - up (x times)
@@ -181,7 +263,7 @@ prevMove: 1 - down
 IMPORTANT: The first time that dsfLeaf is called prevMove = 3, sideways = 0
 */
 
-void dfsLeaf(struct Graph* graph, int startVertex, int prevMove, int sideways, int *visited) {
+/*void dfsLeaf(struct Graph* graph, int startVertex, int prevMove, int sideways, int *visited) {
 
   struct AdjListNode* temp = graph->array[startVertex].head;
 
@@ -210,4 +292,4 @@ void dfsLeaf(struct Graph* graph, int startVertex, int prevMove, int sideways, i
     temp = temp->next;
   }
   
-}
+}*/

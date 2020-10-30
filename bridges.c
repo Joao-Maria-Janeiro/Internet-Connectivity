@@ -34,9 +34,9 @@ void bridges(Graph* graph) {
 
     for(int k = 0; k<bridgesCount; k++){
         temp = graph->array[bridgesArray[k].u].head;
-        printf("%d unode \t", temp->node);
+        //printf("%d unode \t", temp->node);
         temp = graph->array[bridgesArray[k].v].head;
-        printf("%d vnode \n", temp->node);
+        //printf("%d vnode \n", temp->node);
     }
   
   
@@ -54,22 +54,28 @@ int bridgesUtil(Graph *g, int u, int* isVisited, int* d,int* parent,int* l, Edge
   struct AdjListNode* temp = g->array[u].head;
   static int time=0; //ya eu sei que isto é foleiro mas azar
   static int bridgesCount = 0; 
-  
+  //printf("Bridges Count: %d\n", bridgesCount);
+  /*if (bridgesCount > 800 ){
+    return bridgesCount;
+  }*/
   isVisited[u]=1; 
   d[u]=l[u]=++time;
-  
+  //printf("Time: %d\n", time);
   while(temp!=NULL) {       
     // int vIndex = getHash(g, temp->neighbour);
     int v = temp->neighbour; 
     // printf("v = %d \n", v);
     
     struct AdjListNode* tempAux = g->array[v].head;
-    printf("Nova estrutura\n");
+    //printf("Nova estrutura\n");
     if(!isVisited[v]) { //if neighbour was not visited
       parent[v] = temp->node;
       // printf("Debug line:179 %d  %d %d \n ", v, parent[v], temp->neighbour );
-      bridgesUtil(g,v,isVisited,d,parent,l,bridgesArray);
-      // printf("Debug line:181 %d  %d %d \n ", v, parent[v], temp->neighbour );
+      bridgesCount  = bridgesUtil(g,v,isVisited,d,parent,l,bridgesArray);
+      /*if (bridgesCount > 800 ){
+        return bridgesCount;
+      }*/
+      printf("Debug line:181 %d  %d %d \n ", v, parent[v], temp->neighbour );
 
       l[u]= min(l[u],l[v]);
 
@@ -83,10 +89,10 @@ int bridgesUtil(Graph *g, int u, int* isVisited, int* d,int* parent,int* l, Edge
       l[u]=min(l[u],d[v]);
       // printf("Debug line:193\n");  
     }
-    printf("Debug line:196\n");
+    //printf("Debug line:196\n");
     temp= temp->next;
   }
-  printf("Sai linha:94\n");
+  //printf("Sai linha:94\n");
 
   free(temp);
   return bridgesCount;

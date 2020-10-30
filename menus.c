@@ -1,7 +1,8 @@
 #include "menus.h"
 
 void select_option(Graph* graph){
-    //printGraph(graph);  
+    //printGraph(graph); 
+     
     printf("Select your option:\n");
     printf("1.Determine if an input is connected \n");
     printf("2.Determine if an input if link-biconnected \n");
@@ -51,28 +52,28 @@ void select_option(Graph* graph){
             printf("Graph has a commercial cycle %d\n", isCommerciallyCyclic(graph));
             break;
             
-        case 4:
-            
-            
-            connected = graphIsConnected(graph);
-            printf("valor : %d\n",connected);
-            int * tier0Nodes;
-            int tier0Count = 0;
-            int commercially_connected = 0;
+        case 4: {
 
-            if(connected == 1){
-                tier0Count = findTier0(graph, tier0Nodes);
-                for(int i= 0; i<tier0Count; i++){
-                    printf("tier0node %d \n", tier0Nodes[i]);
-                }
-                printf("tier0count = %d \n", tier0Count);
-                if (connected == 1){
-                    printf("COMERCIALMENTE CONEXA = %d \n", commerciallyConnected(graph, tier0Nodes, tier0Count));
-                }
-                //printf("distinct nodes %d \n", nodes);
+            int u = 1;
+            int listSize = graph->listSize;
+            int parent = 0;
+            int* visited = (int*)malloc(listSize * sizeof(int));
+            int* marked = (int*)malloc(listSize * sizeof(int));
+            int* parents = (int*)malloc(listSize * sizeof(int));
+
+            int cyclenumber = 0;
+
+            for( int i=2; i< listSize; i++){
+                visited[i] = 0;
+                marked[i] = 0;
+                parents[i] = -1;
             }
-            break;
+            //printGraph(graph)   ;
+            findAllCycles( graph,  u,  parent,  visited,  marked,  parents, &cyclenumber);
             
+            printCycles( listSize,  marked,  cyclenumber);
+            break;
+        }    
         case 5:
             printf("Closing Programm...\n");
             break;
