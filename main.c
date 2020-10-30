@@ -12,9 +12,8 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
     readInternetFromFile(argv[1]);
-        
+    
 }
-
 
 int checkFileName(int argc, char * fileName) {
     if(argc == 1){
