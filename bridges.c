@@ -27,17 +27,11 @@ void bridges(Graph* graph) {
         }
     }
 
-    printf("There are %d bridges\n\n\n\n",bridgesCount );
-    bridgesCount = 0;
-    
-    // for(int k = 0; k<bridgesCount; k++){
-    //     temp = graph->array[bridgesArray[k].u].head;
-    //     printf("%d \t", temp->node);
-    //     temp = graph->array[bridgesArray[k].v].head;
-    //     printf("%d \n", temp->node);
-    //     if(bridgesCount)
-    // }
+  printf("There are %d bridges\n",bridgesCount );
   
+    
+  printf("Printing One Bridge: %d %d\n\n\n",graph->array[bridgesArray[0].u].head->node,graph->array[bridgesArray[0].v].head->node );
+
   free(d);
   free(isVisited);
   free(parent);

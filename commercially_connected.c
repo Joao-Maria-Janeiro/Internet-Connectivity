@@ -6,22 +6,18 @@ int findTier1(Graph *graph, int * Tier1Nodes){
   int i = 0;
   int Tier1Count= 0;
 
-
-  
   for(i = 0; i<graph->listSize; i++){
     t0Flag = 1;
     temp = graph->array[i].head;
     if(temp == NULL ) continue;
     while(temp != NULL){
-      // printf(" i %d \n", i);
-      // printf("t0flag = %d \t hierarchy = %d \n", t0Flag, temp->hierarchy);
       if(temp->hierarchy == 3){
         t0Flag = 0;
         break;
       } 
       temp = temp->next;
     }
-    //printf("t0flag = %d \t SAIU DO WHILE\n", t0Flag);
+    
     if(t0Flag == 1){
       Tier1Nodes[Tier1Count] = i;
       Tier1Count++;
@@ -89,8 +85,6 @@ void findAllCycles(Graph* graph, int u, int parent, int visited[], int marked[],
     //printf("Neighbour: %d\n",temp->neighbour);
     if((temp->neighbour == parents[u]) ) {
       temp = temp->next;
-      //printf("While\n")    ;
-      //isCommerciallyCyclicUtil(graph, temp->neighbour, visited, v, cycleVertices, cycleFoundFlag, cycleFinished, firstNode, leftTheWhile);
       continue;  
     } 
     findAllCycles(graph,  temp->neighbour,  u,  visited,  marked,  parents,  cyclenumber); 

@@ -17,7 +17,7 @@ int isCommerciallyCyclic (Graph * graph) {
     if (!visited[u] && (graph->array[u].head != NULL) && (cycleFoundFlag == -1)) {
       isCommerciallyCyclicUtil(graph, u, visited, -1, cycleVertices, &cycleFoundFlag, &cycleFinished, &firstNode, leftTheWhile);
       if (cycleFoundFlag != -1) {
-        printf("There is at least one commercial cycle, the cycle found is: \n");
+        printf("There is at least one commercial cycle, the cycle found is: \n\n\n");
         for (int i = 0; i < graph->listSize; i++) {
           if(cycleVertices[i] == 1)
             printf("%d\n", i);
