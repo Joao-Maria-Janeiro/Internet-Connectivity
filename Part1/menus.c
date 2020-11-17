@@ -40,6 +40,10 @@ void select_option(Graph* graph){
                 system("clear");
                 connected = graphIsConnected(graph);
 
+                // if (connected == 1) {
+                //     isCommerciallyConnected(graph);
+                // }
+
                 int * tier1Nodes = (int*)malloc(graph->listSize * sizeof(int));
                 int tier1Count = 0;
                 int commercially_connected = 0;

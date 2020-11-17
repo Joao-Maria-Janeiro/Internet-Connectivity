@@ -1,4 +1,6 @@
 #include "commercially_connected.h"
+#include "stack.h"
+
 /*Tier1Nodes is an array that keeps the Tier1Nodes by whichever order they are found*/
 int findTier1(Graph *graph, int * Tier1Nodes){
   struct AdjListNode* temp;
@@ -66,23 +68,6 @@ void findAllCycles(Graph* graph, int u, int parent, int visited[], int marked[],
   visited[u] = 1;
   
   while (temp != NULL){ // We only need to find a single cycle, so once we find one we stop
-
-
-
-    // if(temp->hierarchy != 1) { // If it's a peer to peer it's not commercial
-    //     printf("Parent: %d | Node: %d | Child: %d | Hierarchy: %d | Parents[u]: %d\n ",  parent, u, temp->neighbour, temp->hierarchy, parents[u]);
-    //      temp = temp->next;
-    //      continue;
-    // }
-    // else if((temp->neighbour == parents[u])&& (temp->hierarchy != 3 )){
-    //   temp = temp->next;
-    //      continue;
-    //printf("Parent: %d | Node: %d | Child: %d | Hierarchy: %d | Parents[u]: %d ...... %d\n ",  parent, u, temp->neighbour, temp->hierarchy, parents[u]);
-         //temp = temp->next;
-  
-    // printf("Parent: %d | Node: %d | Child: %d | Hierarchy: %d | Parents[u]: %d\n ",  parent, u, temp->neighbour, temp->hierarchy, parents[u]);
-    // If an adjacent is not visited, then recur for that adjacent 
-    //printf("Neighbour: %d\n",temp->neighbour);
     if((temp->neighbour == parents[u]) ) {
       temp = temp->next;
       continue;  
@@ -121,35 +106,39 @@ void printCycles(int listSize, int marked[], int cyclenumber)
 
 
 int commerciallyConnected(Graph *graph, int* Tier1Nodes, int Tier1Count){
-  
-
   int * visited = (int *)malloc(graph->listSize*sizeof(int));
   for(int i= 0; i<graph->listSize; i++){
     visited[i] = 0;
   }
 
+  Graph * newGraph;
+
   if( Tier1Count == 0){
-      
-  }
+    newGraph = isCommerciallyConnected(graph);
+    if (newGraph == NULL) {
+      return 0;
+    }
 
-  if(Tier1AllCon(graph, Tier1Nodes, Tier1Count) == 0) return 0;
+    Tier1Count = findTier1(newGraph, Tier1Nodes);
 
-  
-  // printf("\n");
-  bfsTier1(graph, Tier1Nodes[0], visited);
-  // printf("visited[2] %d \n", visited[2] );
+    if(Tier1AllCon(newGraph, Tier1Nodes, Tier1Count) == 0) return 0;
 
-  for(int i = 0; i < graph->listSize; i++) {
-    if(graph->array[i].head != NULL) {
-      if (visited[i] !=  1){
-        printf("The Network is not Commercially Connecte\n\n\n");
-        return 0;
+    bfsTier1(newGraph, Tier1Nodes[0], visited);
+
+    for(int i = 0; i < newGraph->listSize; i++) {
+      if(newGraph->array[i].head != NULL) {
+        if (visited[i] !=  1){
+          printf("The Network is not Commercially Connecte\n\n\n");
+          return 0;
+        }
       }
     }
+    printf("The Network is Commercially Connected\n\n\n");
+    free(visited);
+    return 1;
   }
-  printf("The Network is Commercially Connected\n\n\n");
-  free(visited);
-  return 1;
+
+  
 }
 
 /*checks if all tier 0 Nodes present in the array Tier1Nodes are connected */
@@ -176,9 +165,6 @@ int  Tier1AllCon(Graph *graph, int *Tier1Nodes, int Tier1Count){
       }
     }
   }
-
-  //else they are all connected
-  //printf("All connected\n");
   return 1;
 }
 
@@ -219,9 +205,119 @@ int* bfsTier1(Graph *graph, int startVertex, int *visited ){
 }
 
 
+Graph * isCommerciallyConnected(Graph * graph) {
+  Stack * stack = createStack(graph->V);
+  int * visited = (int *)malloc(graph->listSize*sizeof(int));
+
+  for(int i=0; i<graph->listSize; i++) { //initializing the vectors
+    visited[i]=0;
+  }
+
+  for(int i = 0; i < graph->listSize; i++) {
+    if((graph->array[i].head != NULL) && (!visited[i])) {
+     fillOrder(stack, i, visited, graph);
+     break;
+    }
+  }
+
+  if (!isFull(stack)) {
+    printf("The graph is not commercially connected\n");
+    return NULL;
+  }
+
+  for(int i=0; i<graph->listSize; i++) { 
+    visited[i] = 0;
+  }
+
+  int * nodeRoot = (int *)malloc(graph->listSize*sizeof(int));
+  int * superNode = (int *)malloc(graph->listSize*sizeof(int));
+  struct Graph* newGraph = createGraph(graph->V, graph->E, graph->listSize);
+
+   for(int i = 0; i < graph->listSize; i++) {
+      nodeRoot[i] = i;
+    }
+
+  while(!stackIsEmpty(stack)) {
+    int v = peek(stack);
+    pop(stack);
+
+    if(!visited[v]) {
+      for(int i = 0; i < graph->listSize; i++) {
+        superNode[i] = 0;
+      }
+      dfsCommerciallyConnected(v, visited, graph, superNode);
+      int root = -1;
+      for(int i = 0; i < graph->listSize; i++) {
+        if (superNode[i] == 1) {
+          root = graph->array[i].head->node;
+        }
+      }
+      for(int i = 0; i < graph->listSize; i++) {
+        if (superNode[i] == 1) {
+          nodeRoot[i] = root;
+        }
+      }
+      for(int i = 0; i < graph->listSize; i++) {
+        if (superNode[i]) {
+          struct AdjListNode* temp = graph->array[i].head;
+          while(temp != NULL) {
+            if (!superNode[temp->neighbour])
+              addEdge(newGraph, root, nodeRoot[temp->neighbour], temp->hierarchy);
+            temp = temp->next;
+          }
+        }
+      }
+      printf("\n");
+    }
+  }
+
+  int v;
+  for (v = 0; v < newGraph->listSize; ++v) {
+    struct AdjListNode* pCrawl = newGraph->array[v].head;
+    if (pCrawl != NULL) {
+        while (pCrawl) {
+          pCrawl->neighbour = nodeRoot[pCrawl->neighbour];
+          pCrawl = pCrawl->next;
+        }
+    }
+  }
+
+  return newGraph;
+}
 
 
+void dfsCommerciallyConnected(int v, int * visited, Graph * graph, int * superNode) {
+  visited[v] = 1;
+  struct AdjListNode* temp = graph->array[v].head;
 
+  printf("%d ", v);
+  superNode[v] = 1;
 
+  while (temp != NULL) {
+    if(temp->hierarchy != 3) { // Iterate through the reverse graph
+      temp = temp->next;
+      continue;
+    } 
+    if(!visited[temp->neighbour]) {
+      dfsCommerciallyConnected(temp->neighbour, visited, graph, superNode);
+    }
+    temp = temp->next;
+  }
+}
 
+void fillOrder(Stack * stack, int v, int * visited, Graph * graph) {
+  visited[v] = 1;
+  struct AdjListNode* temp = graph->array[v].head;
 
+  while (temp != NULL) {
+    if(temp->hierarchy != 1) { // If it's a peer to peer it's not commercial
+      temp = temp->next;
+      continue;
+    } 
+    if(!visited[temp->neighbour]) {
+      fillOrder(stack, temp->neighbour, visited, graph);
+    }
+    temp = temp->next;
+  }
+  push(stack, v);
+}

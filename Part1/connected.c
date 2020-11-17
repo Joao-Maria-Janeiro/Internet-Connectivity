@@ -11,9 +11,6 @@ int graphIsConnected(Graph * graph) {
         connected = 0;
     }
     else {
-
-      // for (int i = 0; i < graph->listSize; i++)
-      //   visited[i] = 0;
       while (graph->array[j].head == NULL) {
           j++;
       } 

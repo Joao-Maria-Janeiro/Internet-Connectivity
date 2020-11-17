@@ -39,29 +39,6 @@ int readInternetFromFile(char * fileName) {
         addEdge(graph, tailIdentifier, headIdentifier, providerOfTheHead);
     }
     fclose(input_file);
-
-
-    /*
-    //printGraph(graph);
-    //bridges(graph);
-    int connected = 0;
-    connected = graphIsConnected(graph);
-    printf("valor : %d\n",connected);
-    int * tier0Nodes;
-    int tier0Count = 0;
-    int commercially_connected = 0;
-
-    if(connected == 1){
-        tier0Count = findTier0(graph, tier0Nodes);
-        for(int i= 0; i<tier0Count; i++){
-            printf("tier0node %d \n", tier0Nodes[i]);
-        }
-        printf("tier0count = %d \n", tier0Count);
-        if (connected == 1){
-            printf("COMERCIALMENTE CONEXA = %d \n", commerciallyConnected(graph, tier0Nodes, tier0Count));
-         }
-    }*/
-  
     
     select_option(graph);   
     freeGraph(graph);
