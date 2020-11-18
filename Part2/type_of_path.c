@@ -43,42 +43,79 @@ int djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * 
     currentListNode.previousHierarchy = -1;
     addToHeap(currentListNode, heap, heapSize, allocatedHeapSize);
 
+    int * visited = (int*) malloc(sizeof(int)*graph->listSize);
+    for(int i= 0; i<graph->listSize; i++){
+        visited[i] = -1;
+    }
+
     while((*heapSize) != 0) {
-        printHeap(*heapSize, heap);
+        //printHeap(*heapSize, heap);
         currentListNode = popFromHeap(heapSize, heap);
-        if (parent[currentListNode.node] != -1) { // If this is true this node has never been visited
-            tempListNode = graph->array[currentListNode.node].head;
-            while (tempListNode) {
-                // TODO() define the path type
+        printf("popped %d \n", currentListNode.node);
+        visited[currentListNode.node] += 1;
+
+        //CAN'T REACH 2!!!!!!!!!!
+
+
+        if(visited[currentListNode.node] == 0){ //only executes 1 time, the first time
+            //printf("currListnode %d \t parent %d \t pathtype Parent %d \n", currentListNode.node, currentListNode.parent,pathTypeArray[currentListNode.parent] );
+            //once we have popped the node from the heap we know that the "optimum" path was taken:
+            if((pathTypeArray[currentListNode.parent] == 0) && (currentListNode.parent != currentListNode.node)){ //startvertex's neighbours
+                printf("vizinhos do startvertex, current %d \n", currentListNode.node);
+                pathTypeArray[currentListNode.node] = currentListNode.previousHierarchy;
+            }
+            else{
+                pathTypeArray[currentListNode.node] = pathTypeArray[currentListNode.parent]; //propagate path type from parent
+            }
+            parent[currentListNode.node] = currentListNode.parent;//define node's best parent
+        }
+        printf("pathrype atualizado %d visited %d %d\n", pathTypeArray[currentListNode.node], visited[currentListNode.node], currentListNode.parent);
+    
+
+        tempListNode = graph->array[currentListNode.node].head;
+        while (tempListNode) {
+             if ((visited[tempListNode->neighbour] <5) && (tempListNode->neighbour != currentListNode.parent)) {
+                 // If this is true this node has never been visited
+            
+                // // For the neighbours of the startvertex
                 // if (currentListNode.previousHierarchy == -1) {
-                //     pathTypeArray[currentListNode.node] = tempListNode->hierarchy;
+                //     printf("63 ATENTAI neighbour %d %d \n", tempListNode->neighbour, currentListNode.node);
+                //     pathTypeArray[tempListNode->neighbour] = tempListNode->hierarchy;
                 // }
                 if ((currentListNode.previousHierarchy == 1) && (tempListNode->hierarchy == 2) // c/r
                 || (currentListNode.previousHierarchy == 1) && (tempListNode->hierarchy == 3)  // c/p
                 || (currentListNode.previousHierarchy == 2) && (tempListNode->hierarchy == 2)  // r/r
                 || (currentListNode.previousHierarchy == 2) && (tempListNode->hierarchy == 3)  // r/p
-                ) {
+                ) { //if the move is ilegal, skip to next neighbour, disregarding this path
+                    // printf("neighbour %d \n", tempListNode->neighbour);
                     tempListNode = tempListNode->next;
                     continue;
-                } else {
+                } else { //the move is legal
                     if ((*heapSize) >= (*allocatedHeapSize)) {
                         heap = (HeapNode *)realloc(heap, (*allocatedHeapSize+250) * sizeof(HeapNode));
                         (*allocatedHeapSize) += 250;
                     }
                     HeapNode neighbourNode;
                     neighbourNode.node = tempListNode->neighbour;
-                    neighbourNode.previousHierarchy = tempListNode->hierarchy;
-                    neighbourNode.parent = currentListNode.node;
+                    neighbourNode.previousHierarchy = tempListNode->hierarchy; //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
+                    neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                     addToHeap(neighbourNode, heap, heapSize, allocatedHeapSize);
+
+                    printf(" 75 Adicionado à heap %d peso %d \n", neighbourNode.node, neighbourNode.previousHierarchy);
+                    printHeap(*heapSize, heap);
                 }
                 tempListNode = tempListNode->next;
             }
-            parent[currentListNode.node] = currentListNode.parent;
-            pathTypeArray[currentListNode.node] = currentListNode.parent;
+            else
+            {
+                tempListNode = tempListNode->next;
+            }
+            
+
         }
     }
 
-    for(int i = 0; i <= 5; i++ ) {
+    for(int i = 1; i < graph->listSize; i++ ) {
         printf("Path type: %d\n", pathTypeArray[i]);
     }
 

@@ -41,7 +41,7 @@ int readInternetFromFile(char * fileName) {
     }
     fclose(input_file);
 
-    pathType(graph, 1, 3);
+    pathType(graph, 4, 3);
 
     printGraph(graph);
     
