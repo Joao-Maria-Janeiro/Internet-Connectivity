@@ -56,6 +56,8 @@ int djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * 
 
         //CAN'T REACH 2!!!!!!!!!!
 
+        // TODO(): On path3 the visited restriction does not allow us to find the best path for the node 2. This path must pass node 1 that is already visited and won't be visited again
+
 
         if(visited[currentListNode.node] == 0){ //only executes 1 time, the first time
             //printf("currListnode %d \t parent %d \t pathtype Parent %d \n", currentListNode.node, currentListNode.parent,pathTypeArray[currentListNode.parent] );
