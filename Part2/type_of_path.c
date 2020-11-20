@@ -4,9 +4,9 @@
 
 #include "type_of_path.h"
 #include "heap.h"
+#include "matrice_handler.h"
 
-
-int pathType(Graph * graph, int startVertex, int endVertex) {
+int pathType(Graph * graph, int startVertex, int endVertex,int* count, int commercially_Connected) {
     int allocatedHeapSize = 500;
     int heapSize = 0;
     short toInsertSize = 0;
@@ -25,17 +25,18 @@ int pathType(Graph * graph, int startVertex, int endVertex) {
     parent[startVertex] = startVertex;
     previousHierarchy[startVertex] = 0;
 
-    djikstraToFindPathType(graph, startVertex, endVertex, parent, previousHierarchy, heap, &heapSize, &allocatedHeapSize);
+    djikstraToFindPathType(graph, startVertex, endVertex, parent, previousHierarchy, heap, &heapSize, &allocatedHeapSize, count, commercially_Connected);
 
 
     
   	//Free arrays
     free(parent);
     free(previousHierarchy);
-
+    free(heap);
 }
+int iteration = 0;
 
-int djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * parent, int * pathTypeArray, HeapNode * heap, int * heapSize, int * allocatedHeapSize) {
+int* djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * parent, int * pathTypeArray, HeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count, int commercially_Connected) {
     AdjListNode* tempListNode = graph->array[startVertex].head;
     HeapNode currentListNode;
     currentListNode.node = tempListNode->node;
@@ -51,7 +52,9 @@ int djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * 
     while((*heapSize) != 0) {
         //printHeap(*heapSize, heap);
         currentListNode = popFromHeap(heapSize, heap);
-        printf("popped %d \n", currentListNode.node);
+        iteration +=1;
+        printf("It:%d\n", iteration);
+        // printf("popped %d \n", currentListNode.node);
         visited[currentListNode.node] += 1;
 
         //CAN'T REACH 2!!!!!!!!!!
@@ -63,7 +66,7 @@ int djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * 
             //printf("currListnode %d \t parent %d \t pathtype Parent %d \n", currentListNode.node, currentListNode.parent,pathTypeArray[currentListNode.parent] );
             //once we have popped the node from the heap we know that the "optimum" path was taken:
             if((pathTypeArray[currentListNode.parent] == 0) && (currentListNode.parent != currentListNode.node)){ //startvertex's neighbours
-                printf("vizinhos do startvertex, current %d \n", currentListNode.node);
+                // printf("vizinhos do startvertex, current %d \n", currentListNode.node);
                 pathTypeArray[currentListNode.node] = currentListNode.previousHierarchy;
             }
             else{
@@ -71,7 +74,7 @@ int djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * 
             }
             parent[currentListNode.node] = currentListNode.parent;//define node's best parent
         }
-        printf("pathrype atualizado %d visited %d %d\n", pathTypeArray[currentListNode.node], visited[currentListNode.node], currentListNode.parent);
+        // printf("pathrype atualizado %d visited %d %d\n", pathTypeArray[currentListNode.node], visited[currentListNode.node], currentListNode.parent);
     
 
         tempListNode = graph->array[currentListNode.node].head;
@@ -103,8 +106,8 @@ int djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * 
                     neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                     addToHeap(neighbourNode, heap, heapSize, allocatedHeapSize);
 
-                    printf(" 75 Adicionado à heap %d peso %d \n", neighbourNode.node, neighbourNode.previousHierarchy);
-                    printHeap(*heapSize, heap);
+                    // printf(" 75 Adicionado à heap %d peso %d \n", neighbourNode.node, neighbourNode.previousHierarchy);
+                    // printHeap(*heapSize, heap);
                 }
                 tempListNode = tempListNode->next;
             }
@@ -116,11 +119,25 @@ int djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * 
 
         }
     }
-
+    //TODO(): Commercially connected
     for(int i = 1; i < graph->listSize; i++ ) {
-        printf("Path type: %d\n", pathTypeArray[i]);
+        if ( graph->array[i].head != NULL){
+            if(visited[i] == -1){
+                if(commercially_Connected == 1){// TODO(): Switch for commercially connected flag
+                    pathTypeArray[i] = 3;
+                }
+                else{
+                    pathTypeArray[i]  = 4;
+                }
+            }
+            
+        }
+        // printf("Path type: %d\n", pathTypeArray[i]);
+        count[pathTypeArray[i]]++;
+        
     }
+    free(visited);
 
-    printf("Reached the end");
+    // printf("Reached the end");
 }
 
