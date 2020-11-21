@@ -46,7 +46,7 @@ int readInternetFromFile(char * fileName) {
     for(int i = 0; i < 5; i++){
         count[i] = 0;
     }
-
+    
     // pathType(graph, 4, 3, count);
 
     // printGraph(graph);
@@ -57,27 +57,32 @@ int readInternetFromFile(char * fileName) {
     
     tier1Count = findTier1(graph, tier1Nodes);
     commercially_Connected = commerciallyConnected(graph, tier1Nodes, tier1Count);   
+
+    printf("commercially connected %d \n", commercially_Connected);
+    //pathType(graph, 4, 3, count, commercially_Connected);
+    
     
     for(int i = 0; i< graph->listSize; i++){
         if ( graph->array[i].head != NULL){
             pathType(graph, i, 3, count,commercially_Connected);
         }
+    }
         
-    }
-    printf("\n");
-    for(int i = 0; i < 5; i++){
-        totalCount += count[i];
-    }
+    // }
+    // printf("\n");
+    // for(int i = 0; i < 5; i++){
+    //     totalCount += count[i];
+    // }
 
-    for(int i = 1; i < 5; i++){
-        printf( " %d: %f ",i, count[i]/totalCount );
-        for(int j = 0; j < count[i]; j++){
-            printf( "| ");
+    // for(int i = 1; i < 5; i++){
+    //     printf( " %d: %f ",i, count[i]/totalCount );
+    //     for(int j = 0; j < count[i]; j++){
+    //         printf( "| ");
             
-        }
-        printf("\n");
-    }
-    printf("\n");
+    //     }
+    //     printf("\n");
+    // }
+    // printf("\n");
 
     // select_option(graph);   
     freeGraph(graph);
