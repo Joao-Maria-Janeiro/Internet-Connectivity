@@ -12,6 +12,14 @@ typedef struct HeapNode {
     int previousHierarchy;
 } HeapNode;
 
+typedef struct LengthHeapNode {
+    int node;
+    int neighbour;
+    int parent;
+    int pathLength;
+    int previousHierarchy;
+} LengthHeapNode;
+
 
 int getLeftChildIndex(int parentIndex);
 int getRightChildIndex(int parentIndex);
@@ -40,6 +48,28 @@ void heapifyUp(int size, HeapNode * items);
 void heapifyDown(int size, HeapNode * items);
 
 void printHeap(int size, HeapNode * items);
+
+
+LengthHeapNode pathLeftChild(int index, LengthHeapNode * items);
+
+LengthHeapNode pathRightChild(int index, LengthHeapNode * items);
+
+LengthHeapNode pathhParent(int index, LengthHeapNode * items);
+
+void pathSwap(int index1, int index2, LengthHeapNode * items);
+
+
+LengthHeapNode pathPopFromHeap(int *size, LengthHeapNode * items);
+
+
+void pathAddToHeap(LengthHeapNode item, LengthHeapNode * items, int *size, int *allocatedSize);
+
+void pathHeapifyUp(int size, LengthHeapNode * items);
+
+void pathHeapifyDown(int size, LengthHeapNode * items);
+
+
+void pathPrintHeap(int size, LengthHeapNode * items);
 
 
 

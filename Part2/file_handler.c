@@ -5,6 +5,7 @@
 #include "file_handler.h"
 #include "type_of_path.h"
 #include "commercially_connected.h"
+#include "path_length.h"
 // Used in second hash function. 
 
 
@@ -41,34 +42,62 @@ int readInternetFromFile(char * fileName) {
     }
     fclose(input_file);
 
-    int count[5];
+
+    int count[graph->E];
     float totalCount = 0;
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < graph->E; i++){
         count[i] = 0;
     }
-    
-    // pathType(graph, 4, 3, count);
 
-    // printGraph(graph);
-    int commercially_Connected = 0;
-    int * tier1Nodes = (int*)malloc(graph->listSize * sizeof(int));
-    int tier1Count = 0;
+    pathLength(graph, 4, count);
+    
+    printf("\n");
+    for(int i = 0; i < graph->E; i++){
+        totalCount += count[i];
+    }
 
-    
-    tier1Count = findTier1(graph, tier1Nodes);
-    commercially_Connected = commerciallyConnected(graph, tier1Nodes, tier1Count);   
-
-    printf("commercially connected %d \n", commercially_Connected);
-    //pathType(graph, 4, 3, count, commercially_Connected);
-    
-    
-    for(int i = 0; i< graph->listSize; i++){
-        if ( graph->array[i].head != NULL){
-            pathType(graph, i, 3, count,commercially_Connected);
+    for(int i = 1; i < graph->E; i++){
+        if (count[i] != 0) {
+            printf( " %d: %f ",i, count[i]/totalCount );
+            for(int j = 0; j < count[i]; j++){
+                printf( "| ");
+                
+            }
+            printf("\n");
         }
     }
-        
+    printf("\n");
+
+    
+
+    // int count[5];
+    // float totalCount = 0;
+    // for(int i = 0; i < 5; i++){
+    //     count[i] = 0;
     // }
+    
+    // // pathType(graph, 4, 3, count);
+
+    // // printGraph(graph);
+    // int commercially_Connected = 0;
+    // int * tier1Nodes = (int*)malloc(graph->listSize * sizeof(int));
+    // int tier1Count = 0;
+
+    
+    // tier1Count = findTier1(graph, tier1Nodes);
+    // commercially_Connected = commerciallyConnected(graph, tier1Nodes, tier1Count);   
+
+    // printf("commercially connected %d \n", commercially_Connected);
+    // //pathType(graph, 4, 3, count, commercially_Connected);
+    
+    
+    // for(int i = 0; i< graph->listSize; i++){
+    //     if ( graph->array[i].head != NULL){
+    //         pathType(graph, i, 3, count,commercially_Connected);
+    //     }
+    // }
+        
+    // // }
     // printf("\n");
     // for(int i = 0; i < 5; i++){
     //     totalCount += count[i];
@@ -87,7 +116,7 @@ int readInternetFromFile(char * fileName) {
     // select_option(graph);   
     freeGraph(graph);
     free(allElements);
-    free(tier1Nodes);
+    // free(tier1Nodes);
 
     return 0;
     

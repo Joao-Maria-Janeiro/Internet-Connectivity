@@ -119,3 +119,89 @@ void printHeap(int size, HeapNode * items) {
   }
 }
 
+
+
+
+
+
+
+// ---- Heap for shortest paths -----
+
+
+
+
+LengthHeapNode pathLeftChild(int index, LengthHeapNode * items){
+  return items[getLeftChildIndex(index)];
+}
+
+LengthHeapNode pathRightChild(int index, LengthHeapNode * items){
+  return items[getRightChildIndex(index)];
+}
+
+LengthHeapNode pathhParent(int index, LengthHeapNode * items){
+  return items[getParentIndex(index)];
+}
+
+void pathSwap(int index1, int index2, LengthHeapNode * items){
+  LengthHeapNode temp = items[index1];
+  items[index1] = items[index2];
+  items[index2] = temp;
+}
+
+
+LengthHeapNode pathPopFromHeap(int *size, LengthHeapNode * items){
+  if(*size == 0){ //Caso em que o acervo está vazio damos return de -1
+    LengthHeapNode empty;
+    empty.node=-1;
+    empty.neighbour=-1;
+    empty.pathLength = INT_MAX;
+    return empty;
+  }else{
+    //Removemos o elemento de maior prioridade e ajustamos o acervo
+    LengthHeapNode item = items[0];
+    items[0] = items[*size - 1];
+    (*size)--;
+    pathHeapifyDown(*size, items);
+    return item;
+  }
+}
+
+
+void pathAddToHeap(LengthHeapNode item, LengthHeapNode * items, int *size, int *allocatedSize) {
+  //Adicionar no último elemento do acervo
+  items[*size] = item;
+  (*size)++;
+  pathHeapifyUp(*size, items);
+}
+
+void pathHeapifyUp(int size, LengthHeapNode * items) {
+  int index = size - 1;
+  while((hasParent(index) == 1) && (pathhParent(index, items)).pathLength > (items[index]).pathLength) {
+    pathSwap(getParentIndex(index), index, items);
+    index = getParentIndex(index);
+  }
+}
+
+void pathHeapifyDown(int size, LengthHeapNode * items){
+  int index = 0;
+  while(hasLeftChild(index, size) == 1){
+    int smallerChildrenIdx = getLeftChildIndex(index);
+    if((hasRightChild(index, size) == 1) && ((pathRightChild(index, items)).pathLength < (pathLeftChild(index, items)).pathLength)){
+      smallerChildrenIdx = getRightChildIndex(index);
+    }
+
+    if(items[index].pathLength < items[smallerChildrenIdx].pathLength){
+      break;
+    }else{
+      pathSwap(index, smallerChildrenIdx, items);
+    }
+    index = smallerChildrenIdx;
+  }
+}
+
+
+void pathPrintHeap(int size, LengthHeapNode * items) {
+  for(int i=0; i<size; i++) {
+    printf("(%d) -> %d\n", items[i].node, items[i].pathLength);
+  }
+}
