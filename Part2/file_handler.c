@@ -42,31 +42,9 @@ int readInternetFromFile(char * fileName) {
     }
     fclose(input_file);
 
-
-    int count[graph->E];
-    float totalCount = 0;
-    for(int i = 0; i < graph->E; i++){
-        count[i] = 0;
-    }
-
-    pathLength(graph, 4, count);
+    select_option(graph);
     
-    printf("\n");
-    for(int i = 0; i < graph->E; i++){
-        totalCount += count[i];
-    }
-
-    for(int i = 1; i < graph->E; i++){
-        if (count[i] != 0) {
-            printf( " %d: %f ",i, count[i]/totalCount );
-            for(int j = 0; j < count[i]; j++){
-                printf( "| ");
-                
-            }
-            printf("\n");
-        }
-    }
-    printf("\n");
+  
 
     
 
@@ -78,7 +56,7 @@ int readInternetFromFile(char * fileName) {
     
     // // pathType(graph, 4, 3, count);
 
-    // // printGraph(graph);
+    // // // printGraph(graph);
     // int commercially_Connected = 0;
     // int * tier1Nodes = (int*)malloc(graph->listSize * sizeof(int));
     // int tier1Count = 0;
@@ -88,30 +66,18 @@ int readInternetFromFile(char * fileName) {
     // commercially_Connected = commerciallyConnected(graph, tier1Nodes, tier1Count);   
 
     // printf("commercially connected %d \n", commercially_Connected);
-    // //pathType(graph, 4, 3, count, commercially_Connected);
+    // pathType(graph, 1, 3, count, commercially_Connected);
     
     
     // for(int i = 0; i< graph->listSize; i++){
     //     if ( graph->array[i].head != NULL){
+    //         printf("Doing: %d\n",i);
     //         pathType(graph, i, 3, count,commercially_Connected);
     //     }
     // }
         
     // // }
-    // printf("\n");
-    // for(int i = 0; i < 5; i++){
-    //     totalCount += count[i];
-    // }
-
-    // for(int i = 1; i < 5; i++){
-    //     printf( " %d: %f ",i, count[i]/totalCount );
-    //     for(int j = 0; j < count[i]; j++){
-    //         printf( "| ");
-            
-    //     }
-    //     printf("\n");
-    // }
-    // printf("\n");
+   
 
     // select_option(graph);   
     freeGraph(graph);

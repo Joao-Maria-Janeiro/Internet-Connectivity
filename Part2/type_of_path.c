@@ -6,12 +6,12 @@
 #include "heap.h"
 #include "matrice_handler.h"
 
-int pathType(Graph * graph, int startVertex, int endVertex, int* count, int commercially_Connected) {
+int pathType(Graph * graph, int startVertex,int inputStartVertex ,int inputDestVertex, int* count) {
     int allocatedHeapSize = 500;
     int heapSize = 0;
     short toInsertSize = 0;
     //Todo(): Make function to free heap
-    HeapNode * heap = (HeapNode *) malloc(500* sizeof(HeapNode));
+    HeapNode * heap = (HeapNode *) malloc(graph->listSize* sizeof(HeapNode));
 
     int * parent = (int *)malloc(graph->listSize * sizeof(int)); // Array that tells the node where we came from
     int * previousHierarchy = (int *)malloc(graph->listSize * sizeof(int)); // Array that tells the hierarchy of the edge where we came from
@@ -26,7 +26,7 @@ int pathType(Graph * graph, int startVertex, int endVertex, int* count, int comm
     previousHierarchy[startVertex] = 0;
 
     //djikstraToFindPathType(graph, startVertex, endVertex, parent, previousHierarchy, heap, &heapSize, &allocatedHeapSize, count, commercially_Connected);
-    bfsPathType(graph, startVertex, heap, &heapSize, &allocatedHeapSize, count);
+    bfsPathType(graph, startVertex, inputStartVertex, inputDestVertex, heap, &heapSize, &allocatedHeapSize, count);
 
     
   	//Free arrays
@@ -43,7 +43,7 @@ int caminhoInverso(int caminho){
 
 
 /*tal como no djikstraToFindPathType, o heap guarda os nós que foram atualizados por prioridade de tipo de caminho*/
-void *bfsPathType(Graph * graph, int startVertex, HeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count) {
+void *bfsPathType(Graph * graph, int startVertex,int inputStartVertex, int inputDestVertex, HeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count) {
     // printf("enttrou \n");
     AdjListNode* tempListNode = graph->array[startVertex].head;
     HeapNode currentListNode;
@@ -82,26 +82,12 @@ void *bfsPathType(Graph * graph, int startVertex, HeapNode * heap, int * heapSiz
     int TYPE = 0;
     int VIA = 1;
 
-
-
-    //ESTA É A PARTE IMPORTANTE
-    // printf("vai começar \n");
     while((*heapSize) != 0){
         currentListNode = popFromHeap(heapSize, heap);
         // printf("popped %d \n", currentListNode.node);
         tempListNode = graph->array[currentListNode.node].head;
         while (tempListNode) {
-            //ve se pode melhorar os caminhos do vizinho, se os melhora, coloca-os no heap
-            //verifica se pode melhorar && caminho resultante é legal
-            //caso especial para o startvertex
-
-            printf("%d\n", tempListNode->neighbour != startVertex);
-            printf("%d %d %d %d\n", tempListNode->hierarchy, currentListNode.node, tempListNode->neighbour, startVertex);
-            printf("%d %d\n", typeOfPath[TYPE][currentListNode.node] -1, caminhoInverso(tempListNode->hierarchy) -1);
-            printf("%d\n", caminhoInverso(tempListNode->hierarchy) < typeOfPath[TYPE][tempListNode->neighbour]);
-            printf("%d\n", caminhosLegais[caminhoInverso(tempListNode->hierarchy) -1][typeOfPath[TYPE][currentListNode.node] - 1]);
-
-
+           
             if(currentListNode.node == startVertex){ //so acontece da primeira vez
                 //melhora o caminho do vizinho
                 typeOfPath[TYPE][tempListNode->neighbour] = caminhoInverso(tempListNode->hierarchy);
@@ -126,9 +112,12 @@ void *bfsPathType(Graph * graph, int startVertex, HeapNode * heap, int * heapSiz
                 addToHeap(neighbourNode, heap, heapSize, allocatedHeapSize);
             }
 
-
             tempListNode = tempListNode->next;
         }
+    }
+
+    if(startVertex == inputDestVertex) {
+        printf("Path type from: %d to %d is %d\n", inputStartVertex, inputDestVertex, typeOfPath[TYPE][inputStartVertex] );
     }
     // for(i= 1; i<graph->listSize; i++){
     //     printf("no %d tipo %d via %d \n",i,  typeOfPath[TYPE][i], typeOfPath[VIA][i]);
@@ -140,6 +129,10 @@ void *bfsPathType(Graph * graph, int startVertex, HeapNode * heap, int * heapSiz
             count[typeOfPath[TYPE][i]]++;
         }
     }
+
+    free(caminhosLegais);
+    free(typeOfPath[0]);
+    free(typeOfPath[1]);
 }
 
 int* djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * parent, int * pathTypeArray, HeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count, int commercially_Connected) {

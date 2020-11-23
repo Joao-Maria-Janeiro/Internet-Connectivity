@@ -13,10 +13,10 @@
 
 
 
-int pathType(Graph * graph, int startVertex, int endVertex, int* count, int commercially_Connected);
+int pathType(Graph * graph, int startVertex, int inputStartVertex, int inputDestVertex, int* count);
 int* djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * parent, int * visited, HeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count, int commercially_Connected);
-void *bfsPathType(Graph * graph, int startVertex,HeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count);
-
+void *bfsPathType(Graph * graph, int startVertex, int inputStartVertex, int inputDestVertex, HeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count);
+int caminhoInverso(int caminho);
 
 
 
