@@ -50,6 +50,7 @@ void *bfsPathType(Graph * graph, int startVertex,int inputStartVertex, int input
     currentListNode.node = tempListNode->node;
     currentListNode.parent = tempListNode->node;
     currentListNode.previousHierarchy = -1;
+    currentListNode.pathLength = 0;
     addToHeap(currentListNode, heap, heapSize, allocatedHeapSize);
 
     int **caminhosLegais;
@@ -130,9 +131,12 @@ void *bfsPathType(Graph * graph, int startVertex,int inputStartVertex, int input
         }
     }
 
-    free(caminhosLegais);
     free(typeOfPath[0]);
     free(typeOfPath[1]);
+    free(typeOfPath);
+    for(i= 0; i<3; i++)
+        free(caminhosLegais[i]);
+    free(caminhosLegais);
 }
 
 int* djikstraToFindPathType(Graph * graph, int startVertex, int endVertex, int * parent, int * pathTypeArray, HeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count, int commercially_Connected) {

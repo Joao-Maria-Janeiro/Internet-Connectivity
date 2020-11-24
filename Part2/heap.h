@@ -10,6 +10,7 @@ typedef struct HeapNode {
     int neighbour;
     int parent;
     int previousHierarchy;
+    int pathLength;
 } HeapNode;
 
 typedef struct LengthHeapNode {

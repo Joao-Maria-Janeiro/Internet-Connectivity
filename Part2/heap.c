@@ -93,6 +93,12 @@ void heapifyUp(int size, HeapNode * items) {
     swap(getParentIndex(index), index, items);
     index = getParentIndex(index);
   }
+  if((hasParent(index) == 1) && (parent(index, items)).previousHierarchy == (items[index]).previousHierarchy) {
+    if((parent(index, items)).pathLength > (items[index]).pathLength) {
+      swap(getParentIndex(index), index, items);
+      index = getParentIndex(index);
+    }
+  }
 }
 
 void heapifyDown(int size, HeapNode * items){

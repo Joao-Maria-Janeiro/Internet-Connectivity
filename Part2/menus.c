@@ -8,11 +8,12 @@ void select_option(Graph* graph){
     
     
     do{
+        
         printf("Select your option:\n");
         printf("1.Determine path type \n");
         printf("2.Determine path length \n");
         printf("3.Determine the fastest path \n");
-        printf("5.Exit Programm \n\n");
+        printf("4.Exit Programm \n\n");
 
        
         scanf("%d", &option);
@@ -25,110 +26,172 @@ void select_option(Graph* graph){
             case 1:
                 system("clear");
                 
-                int validVertex = 0;
-                
-                printf("Select your start vertex:");
-                scanf( "%d", &inputStartVertex);
-                printf("Select your destination vertex:");
-                scanf( "%d", &inputDestVertex);
-
                 int count[5];
                 float totalCount = 0;
                 for(int i = 0; i < 5; i++){
                     count[i] = 0;
                 }
-                // do{
-                //     for(int i = 0; i<graph->listSize; i++) {
-                        
-                //         if(inputStartVertex == graph->array[i].head) {
-                //             validVertex = 1;
-                //             if(inputDestVertex == graph->array[i].head && inputDestVertex != inputStartVertex) {
-                //                 validVertex = 2;
-                //                 continue; 
-                //             }
-                            
-                                   
-                //         }
-                //     }
+                int option_1 = 0;
+                
+
+                printf("Select your option:\n");
+                printf("1.From 1 node to another\n");
+                printf("2.Stats from all pairs\n");
+                printf("3.Change Mode\n");
+                scanf( "%d", &option_1);
+
+                switch (option_1){
+               
+                case 1:
+                    system("clear");
+                    printf("Select your start vertex:");
+                    scanf( "%d", &inputStartVertex);
+                    printf("Select your destination vertex:");
+                    scanf( "%d", &inputDestVertex);
+
+                    pathType(graph, inputDestVertex, inputStartVertex , inputDestVertex,  count);
+                    break;
+                
+                case 2:
+                
+                    for(int i = 0; i< graph->listSize; i++){
+                        if ( graph->array[i].head != NULL){
+                            pathType(graph,  i, inputStartVertex , inputDestVertex,  count);
+                        }
+                    }
                     
-                //     if(validVertex == 0 ){
-                //         printf("The selected starting vertex is not valid, select another vertex:");
-                //         scanf(&d, inputStartVertex);
-                //     }
-                //     else if(validVertex == 1 ){
-                //         printf("The selected ending vertex is not valid, select another vertex:");
-                //         scanf(&d, inputDestVertex);
-                //     }
+                    printf("The Path Statistics for this Graph is:\n");
 
-                // }while(validVertex != 2);
-                
-                for(int i = 0; i< graph->listSize; i++){
-                    if ( graph->array[i].head != NULL){
-                        pathType(graph,  i, inputStartVertex , inputDestVertex,  count);
-                    }
-                }
-                
-                printf("The Path Statistics for this Graph is:\n");
-
-                printf("\n");
-                for(int i = 0; i < 5; i++){
-                    totalCount += count[i];
-                }
-
-                for(int i = 1; i < 5; i++){
-                    printf( " %d: %f ",i, count[i]/totalCount );
-                    for(int j = 0; j < count[i]; j++){
-                        printf( "| ");
-                        
-                    }
                     printf("\n");
-                }
-                printf("\n");
-                
-                
-                break;
-                
-            case 2:
-                system("clear");
-
-                printf("Select your start vertex:");
-                scanf( "%d", &inputStartVertex);
-                printf("Select your destination vertex:");
-                scanf( "%d", &inputDestVertex);
-
-                int *countLength = (int*)malloc(sizeof(int) * (graph->E));
-                for(int i = 0; i < graph->E; i++){
-                    countLength[i] = 0;
-                }
-
-            
-                for(int i = 0; i< graph->listSize; i++){
-                    if ( graph->array[i].head != NULL){
-                        
-                        pathLength(graph, i, inputStartVertex,inputDestVertex,countLength);
+                    for(int i = 0; i < 5; i++){
+                        totalCount += count[i];
                     }
-                }
-                printf("\n");
-                for(int i = 0; i < graph->E; i++){
-                    totalCount += countLength[i];
-                }
 
-                for(int i = 1; i < graph->E; i++){
-                    if (countLength[i] != 0) {
-                        printf( " %d: %f ",i, countLength[i]/totalCount );
-                        for(int j = 0; j < countLength[i]; j++){
+                    for(int i = 1; i < 5; i++){
+                        printf( " %d: %f ",i, count[i]/totalCount );
+                        for(int j = 0; j < count[i]; j++){
                             printf( "| ");
                             
                         }
                         printf("\n");
                     }
+                    printf("\n");
+                    break;
+                case 3:
+                    break;
+                
                 }
-                printf("\n");
+                break;
+                
+            case 2:
+                system("clear");
+
+                int *countLength = (int*)malloc(sizeof(int) * (graph->E));
+                for(int i = 0; i < graph->E; i++){
+                    countLength[i] = 0;
+                }
+                int option_2 = 0;
+
+                printf("Select your option:\n");
+                printf("1.From 1 node to another\n");
+                printf("2.Stats from all pairs\n");
+                printf("3.Change Mode\n");
+                scanf( "%d", &option_2);
+
+                switch(option_2) {
+                
+               
+                case 1:
+                    system("clear");
+                    printf("Select your start vertex:");
+                    scanf( "%d", &inputStartVertex);
+                    printf("Select your destination vertex:");
+                    scanf( "%d", &inputDestVertex);
+                
+                    pathLength(graph, inputDestVertex, inputStartVertex,inputDestVertex,countLength);
+                    break;
+
+                case 2:
+
+                    for(int i = 0; i< graph->listSize; i++){
+                        if ( graph->array[i].head != NULL){
+                            
+                            pathLength(graph, i, inputStartVertex,inputDestVertex,countLength);
+                        }
+                    }
+                    printf("\n");
+                    for(int i = 0; i < graph->E; i++){
+                        totalCount += countLength[i];
+                    }
+
+                    for(int i = 1; i < graph->E; i++){
+                        if (countLength[i] != 0) {
+                            printf( " %d: %f ",i, countLength[i]/totalCount );
+                            for(int j = 0; j < countLength[i]; j++){
+                                printf( "| ");
+                                
+                            }
+                            printf("\n");
+                        }
+                    }
+                    printf("\n");
+                    break;
+                case 3:
+                    break;
+                }
                 break;
 
             case 3:
                 system("clear");
-                //isCommerciallyCyclic(graph);
+                int option_3 = 0;
+                int *countLengthBestPath = (int*)malloc(sizeof(int) * (graph->E));
+                for(int i = 0; i < graph->E; i++){
+                    countLengthBestPath[i] = 0;
+                }
+                printf("Select your option:\n");
+                printf("1.From 1 node to another\n");
+                printf("2.Stats from all pairs\n");
+                printf("3.Change Mode\n");
+                scanf("%d", &option_3);
+                switch(option_3) {
+                    
+                case 1:
+                    system("clear");
+                    printf("Select your start vertex:");
+                    scanf( "%d", &inputStartVertex);
+                    printf("Select your destination vertex:");
+                    scanf( "%d", &inputDestVertex);
+                    bestPath( graph,  inputDestVertex,  inputStartVertex,  inputDestVertex , countLengthBestPath);
+                    break;
+                case 2:
+                    for(int i = 0; i< graph->listSize; i++){
+                        if ( graph->array[i].head != NULL){
+                            
+                            printf( "Iteração: %d \n",i);
+                            bestPath( graph,  i,  inputStartVertex,  inputDestVertex , countLengthBestPath);
+                        }
+                    }
+                    printf("\n");
+
+                    for(int i = 0; i < graph->E; i++){
+                        totalCount += countLengthBestPath[i];
+                    }
+                    
+                    for(int i = 1; i < graph->E; i++){
+                        if (countLengthBestPath[i] != 0) {
+                            printf( " %d: %f ",i, countLengthBestPath[i]/totalCount );
+                            for(int j = 0; j < countLengthBestPath[i]; j++){
+                                printf( "| ");
+                                
+                            }
+                            printf("\n");
+                        }
+                    }
+                    printf("\n");
+                    break;
+                case 3:
+                    break;
+                }
                 break;    
             case 4:
                 break;
