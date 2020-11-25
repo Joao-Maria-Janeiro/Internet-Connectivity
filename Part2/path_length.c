@@ -99,7 +99,7 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
                 typeOfPath[VIA][tempListNode->neighbour] = startVertex;
                 HeapNode neighbourNode;
                 neighbourNode.node = tempListNode->neighbour;
-                neighbourNode.previousHierarchy = tempListNode->hierarchy; //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
+                neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy);//set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
                 neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                 addToHeap(neighbourNode, heap, heapSize, allocatedHeapSize);
             }
@@ -113,7 +113,7 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
                 typeOfPath[VIA][tempListNode->neighbour] = currentListNode.node;
                 HeapNode neighbourNode;
                 neighbourNode.node = tempListNode->neighbour;
-                neighbourNode.previousHierarchy = tempListNode->hierarchy; //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
+                neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy); //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
                 neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                 addToHeap(neighbourNode, heap, heapSize, allocatedHeapSize);
             }
