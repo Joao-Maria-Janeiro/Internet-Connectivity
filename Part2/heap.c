@@ -89,12 +89,12 @@ void addToHeap(HeapNode item, HeapNode * items, int *size, int *allocatedSize) {
 
 void heapifyUp(int size, HeapNode * items) {
   int index = size - 1;
-  while((hasParent(index) == 1) && (parent(index, items)).previousHierarchy > (items[index]).previousHierarchy) {
+  while((hasParent(index) == 1) && (parent(index, items)).pathLength > (items[index]).pathLength) {
     swap(getParentIndex(index), index, items);
     index = getParentIndex(index);
   }
-  if((hasParent(index) == 1) && (parent(index, items)).previousHierarchy == (items[index]).previousHierarchy) {
-    if((parent(index, items)).pathLength > (items[index]).pathLength) {
+  if((hasParent(index) == 1) && (parent(index, items)).pathLength == (items[index]).pathLength) {
+    if((parent(index, items)).previousHierarchy > (items[index]).previousHierarchy) {
       swap(getParentIndex(index), index, items);
       index = getParentIndex(index);
     }
@@ -105,11 +105,11 @@ void heapifyDown(int size, HeapNode * items){
   int index = 0;
   while(hasLeftChild(index, size) == 1){
     int smallerChildrenIdx = getLeftChildIndex(index);
-    if((hasRightChild(index, size) == 1) && ((rightChild(index, items)).previousHierarchy < (leftChild(index, items)).previousHierarchy)){
+    if((hasRightChild(index, size) == 1) && ((rightChild(index, items)).pathLength < (leftChild(index, items)).pathLength)){
       smallerChildrenIdx = getRightChildIndex(index);
     }
 
-    if(items[index].previousHierarchy < items[smallerChildrenIdx].previousHierarchy){
+    if(items[index].pathLength < items[smallerChildrenIdx].pathLength){
       break;
     }else{
       swap(index, smallerChildrenIdx, items);
