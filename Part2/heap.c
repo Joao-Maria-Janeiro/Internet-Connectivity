@@ -89,12 +89,12 @@ void addToHeap(HeapNode item, HeapNode * items, int *size, int *allocatedSize) {
 
 void heapifyUp(int size, HeapNode * items) {
   int index = size - 1;
-  while((hasParent(index) == 1) && (parent(index, items)).pathLength > (items[index]).pathLength) {
+  while((hasParent(index) == 1) && (parent(index, items)).previousHierarchy > (items[index]).previousHierarchy) {
     swap(getParentIndex(index), index, items);
     index = getParentIndex(index);
   }
-  if((hasParent(index) == 1) && (parent(index, items)).pathLength == (items[index]).pathLength) {
-    if((parent(index, items)).previousHierarchy > (items[index]).previousHierarchy) {
+  if((hasParent(index) == 1) && (parent(index, items)).previousHierarchy == (items[index]).previousHierarchy) {
+    if((parent(index, items)).pathLength > (items[index]).pathLength) {
       swap(getParentIndex(index), index, items);
       index = getParentIndex(index);
     }
@@ -105,11 +105,11 @@ void heapifyDown(int size, HeapNode * items){
   int index = 0;
   while(hasLeftChild(index, size) == 1){
     int smallerChildrenIdx = getLeftChildIndex(index);
-    if((hasRightChild(index, size) == 1) && ((rightChild(index, items)).pathLength < (leftChild(index, items)).pathLength)){
+    if((hasRightChild(index, size) == 1) && ((rightChild(index, items)).previousHierarchy < (leftChild(index, items)).previousHierarchy)){
       smallerChildrenIdx = getRightChildIndex(index);
     }
 
-    if(items[index].pathLength < items[smallerChildrenIdx].pathLength){
+    if(items[index].previousHierarchy < items[smallerChildrenIdx].previousHierarchy){
       break;
     }else{
       swap(index, smallerChildrenIdx, items);
@@ -136,77 +136,83 @@ void printHeap(int size, HeapNode * items) {
 
 
 
-LengthHeapNode pathLeftChild(int index, LengthHeapNode * items){
+BestPathHeapNode bestPathLeftChild(int index, BestPathHeapNode * items){
   return items[getLeftChildIndex(index)];
 }
 
-LengthHeapNode pathRightChild(int index, LengthHeapNode * items){
+BestPathHeapNode bestPathRightChild(int index, BestPathHeapNode * items){
   return items[getRightChildIndex(index)];
 }
 
-LengthHeapNode pathhParent(int index, LengthHeapNode * items){
+BestPathHeapNode bestPathParent(int index, BestPathHeapNode * items){
   return items[getParentIndex(index)];
 }
 
-void pathSwap(int index1, int index2, LengthHeapNode * items){
-  LengthHeapNode temp = items[index1];
+void bestPathSwap(int index1, int index2, BestPathHeapNode * items){
+  BestPathHeapNode temp = items[index1];
   items[index1] = items[index2];
   items[index2] = temp;
 }
 
 
-LengthHeapNode pathPopFromHeap(int *size, LengthHeapNode * items){
+BestPathHeapNode bestPathPopFromHeap(int *size, BestPathHeapNode * items){
   if(*size == 0){ //Caso em que o acervo está vazio damos return de -1
-    LengthHeapNode empty;
+    BestPathHeapNode empty;
     empty.node=-1;
     empty.neighbour=-1;
     empty.pathLength = INT_MAX;
     return empty;
   }else{
     //Removemos o elemento de maior prioridade e ajustamos o acervo
-    LengthHeapNode item = items[0];
+    BestPathHeapNode item = items[0];
     items[0] = items[*size - 1];
     (*size)--;
-    pathHeapifyDown(*size, items);
+    bestPathHeapifyDown(*size, items);
     return item;
   }
 }
 
 
-void pathAddToHeap(LengthHeapNode item, LengthHeapNode * items, int *size, int *allocatedSize) {
+void bestPathAddToHeap(BestPathHeapNode item, BestPathHeapNode * items, int *size, int *allocatedSize) {
   //Adicionar no último elemento do acervo
   items[*size] = item;
   (*size)++;
-  pathHeapifyUp(*size, items);
+  bestPathHeapifyUp(*size, items);
 }
 
-void pathHeapifyUp(int size, LengthHeapNode * items) {
+void bestPathHeapifyUp(int size, BestPathHeapNode * items) {
   int index = size - 1;
-  while((hasParent(index) == 1) && (pathhParent(index, items)).pathLength > (items[index]).pathLength) {
-    pathSwap(getParentIndex(index), index, items);
+  while((hasParent(index) == 1) && (bestPathParent(index, items)).pathLength > (items[index]).pathLength) {
+    bestPathSwap(getParentIndex(index), index, items);
     index = getParentIndex(index);
+  }
+  if((hasParent(index) == 1) && (bestPathParent(index, items)).pathLength == (items[index]).pathLength) {
+    if((bestPathParent(index, items)).previousHierarchy > (items[index]).previousHierarchy) {
+      bestPathSwap(getParentIndex(index), index, items);
+      index = getParentIndex(index);
+    }
   }
 }
 
-void pathHeapifyDown(int size, LengthHeapNode * items){
+void bestPathHeapifyDown(int size, BestPathHeapNode * items){
   int index = 0;
   while(hasLeftChild(index, size) == 1){
     int smallerChildrenIdx = getLeftChildIndex(index);
-    if((hasRightChild(index, size) == 1) && ((pathRightChild(index, items)).pathLength < (pathLeftChild(index, items)).pathLength)){
+    if((hasRightChild(index, size) == 1) && ((bestPathRightChild(index, items)).pathLength < (bestPathLeftChild(index, items)).pathLength)){
       smallerChildrenIdx = getRightChildIndex(index);
     }
 
     if(items[index].pathLength < items[smallerChildrenIdx].pathLength){
       break;
     }else{
-      pathSwap(index, smallerChildrenIdx, items);
+      bestPathSwap(index, smallerChildrenIdx, items);
     }
     index = smallerChildrenIdx;
   }
 }
 
 
-void pathPrintHeap(int size, LengthHeapNode * items) {
+void bestPathPrintHeap(int size, BestPathHeapNode * items) {
   for(int i=0; i<size; i++) {
     printf("(%d) -> %d\n", items[i].node, items[i].pathLength);
   }

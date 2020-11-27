@@ -13,13 +13,13 @@ typedef struct HeapNode {
     int pathLength;
 } HeapNode;
 
-typedef struct LengthHeapNode {
+typedef struct BestPathHeapNode {
     int node;
     int neighbour;
     int parent;
     int pathLength;
     int previousHierarchy;
-} LengthHeapNode;
+} BestPathHeapNode;
 
 
 int getLeftChildIndex(int parentIndex);
@@ -51,26 +51,26 @@ void heapifyDown(int size, HeapNode * items);
 void printHeap(int size, HeapNode * items);
 
 
-LengthHeapNode pathLeftChild(int index, LengthHeapNode * items);
+BestPathHeapNode bestPathLeftChild(int index, BestPathHeapNode * items);
 
-LengthHeapNode pathRightChild(int index, LengthHeapNode * items);
+BestPathHeapNode bestPathRightChild(int index, BestPathHeapNode * items);
 
-LengthHeapNode pathhParent(int index, LengthHeapNode * items);
+BestPathHeapNode bestPathParent(int index, BestPathHeapNode * items);
 
-void pathSwap(int index1, int index2, LengthHeapNode * items);
-
-
-LengthHeapNode pathPopFromHeap(int *size, LengthHeapNode * items);
+void bestPathSwap(int index1, int index2, BestPathHeapNode * items);
 
 
-void pathAddToHeap(LengthHeapNode item, LengthHeapNode * items, int *size, int *allocatedSize);
-
-void pathHeapifyUp(int size, LengthHeapNode * items);
-
-void pathHeapifyDown(int size, LengthHeapNode * items);
+BestPathHeapNode bestPathPopFromHeap(int *size, BestPathHeapNode * items);
 
 
-void pathPrintHeap(int size, LengthHeapNode * items);
+void bestPathAddToHeap(BestPathHeapNode item, BestPathHeapNode * items, int *size, int *allocatedSize);
+
+void bestPathHeapifyUp(int size, BestPathHeapNode * items);
+
+void bestPathHeapifyDown(int size, BestPathHeapNode * items);
+
+
+void bestPathPrintHeap(int size, BestPathHeapNode * items);
 
 
 

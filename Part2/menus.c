@@ -1,11 +1,13 @@
 
 #include "menus.h"
-
+#include "type_of_path.h"
+#include "path_length.h"
+#include "best_path.h"
 
 void select_option(Graph* graph){
     //printGraph(graph); 
     int option = 0;
-    
+    float totalCount = 0; 
     
     do{
         
@@ -27,12 +29,12 @@ void select_option(Graph* graph){
                 system("clear");
                 
                 int count[5];
-                float totalCount = 0;
+                
                 for(int i = 0; i < 5; i++){
                     count[i] = 0;
                 }
                 int option_1 = 0;
-                
+                HeapNode * heap = (HeapNode *) malloc((graph->listSize)* sizeof(HeapNode));
 
                 printf("Select your option:\n");
                 printf("1.From 1 node to another\n");
@@ -49,14 +51,15 @@ void select_option(Graph* graph){
                     printf("Select your destination vertex:");
                     scanf( "%d", &inputDestVertex);
 
-                    pathType(graph, inputDestVertex, inputStartVertex , inputDestVertex,  count);
+                    pathType(graph, inputDestVertex, inputStartVertex , inputDestVertex,  count,heap);
+                    free(heap);
                     break;
                 
                 case 2:
                 
                     for(int i = 0; i< graph->listSize; i++){
                         if ( graph->array[i].head != NULL){
-                            pathType(graph,  i, inputStartVertex , inputDestVertex,  count);
+                            pathType(graph,  i, inputStartVertex , inputDestVertex,  count,heap);
                         }
                     }
                     
@@ -76,6 +79,7 @@ void select_option(Graph* graph){
                         printf("\n");
                     }
                     printf("\n");
+                    free(heap);
                     break;
                 case 3:
                     break;
@@ -86,8 +90,10 @@ void select_option(Graph* graph){
             case 2:
                 system("clear");
 
-                int *countLength = (int*)malloc(sizeof(int) * (graph->E));
-                for(int i = 0; i < graph->E; i++){
+                int *countLength = (int*)malloc(sizeof(int) * (graph->listSize));
+                HeapNode * lengthheap = (HeapNode *) malloc((graph->listSize)* sizeof(HeapNode));
+                
+                for(int i = 0; i < graph->listSize; i++){
                     countLength[i] = 0;
                 }
                 int option_2 = 0;
@@ -108,7 +114,8 @@ void select_option(Graph* graph){
                     printf("Select your destination vertex:");
                     scanf( "%d", &inputDestVertex);
                 
-                    pathLength(graph, inputDestVertex, inputStartVertex,inputDestVertex,countLength);
+                    pathLength(graph, inputDestVertex, inputStartVertex,inputDestVertex,countLength,lengthheap);
+                    free(lengthheap);
                     break;
 
                 case 2:
@@ -116,15 +123,15 @@ void select_option(Graph* graph){
                     for(int i = 0; i< graph->listSize; i++){
                         if ( graph->array[i].head != NULL){
                             
-                            pathLength(graph, i, inputStartVertex,inputDestVertex,countLength);
+                            pathLength(graph, i, inputStartVertex,inputDestVertex,countLength,lengthheap);
                         }
                     }
                     printf("\n");
-                    for(int i = 0; i < graph->E; i++){
+                    for(int i = 0; i < graph->listSize; i++){
                         totalCount += countLength[i];
                     }
 
-                    for(int i = 1; i < graph->E; i++){
+                    for(int i = 1; i < graph->listSize; i++){
                         if (countLength[i] != 0) {
                             printf( " %d: %f ",i, countLength[i]/totalCount );
                             for(int j = 0; j < countLength[i]; j++){
@@ -135,6 +142,7 @@ void select_option(Graph* graph){
                         }
                     }
                     printf("\n");
+                    free(lengthheap);
                     break;
                 case 3:
                     break;
@@ -144,8 +152,9 @@ void select_option(Graph* graph){
             case 3:
                 system("clear");
                 int option_3 = 0;
-                int *countLengthBestPath = (int*)malloc(sizeof(int) * (graph->E));
-                for(int i = 0; i < graph->E; i++){
+                int *countLengthBestPath = (int*)malloc(sizeof(int) * (graph->listSize));
+                BestPathHeapNode * bestPathHeap = (BestPathHeapNode *) malloc((graph->listSize)* sizeof(BestPathHeapNode));
+                for(int i = 0; i < graph->listSize; i++){
                     countLengthBestPath[i] = 0;
                 }
                 printf("Select your option:\n");
@@ -153,6 +162,7 @@ void select_option(Graph* graph){
                 printf("2.Stats from all pairs\n");
                 printf("3.Change Mode\n");
                 scanf("%d", &option_3);
+
                 switch(option_3) {
                     
                 case 1:
@@ -161,23 +171,24 @@ void select_option(Graph* graph){
                     scanf( "%d", &inputStartVertex);
                     printf("Select your destination vertex:");
                     scanf( "%d", &inputDestVertex);
-                    bestPath( graph,  inputDestVertex,  inputStartVertex,  inputDestVertex , countLengthBestPath);
+                    bestPath( graph,  inputDestVertex,  inputStartVertex,  inputDestVertex , countLengthBestPath,bestPathHeap);
+                    free(bestPathHeap);
                     break;
                 case 2:
                     for(int i = 0; i< graph->listSize; i++){
                         if ( graph->array[i].head != NULL){
                             
-                            printf( "Iteração: %d \n",i);
-                            bestPath( graph,  i,  inputStartVertex,  inputDestVertex , countLengthBestPath);
+                            // printf( "Iteração: %d \n",i);
+                            bestPath( graph, i, inputStartVertex, inputDestVertex , countLengthBestPath,bestPathHeap);
                         }
                     }
                     printf("\n");
 
-                    for(int i = 0; i < graph->E; i++){
+                    for(int i = 0; i < graph->listSize; i++){
                         totalCount += countLengthBestPath[i];
                     }
                     
-                    for(int i = 1; i < graph->E; i++){
+                    for(int i = 1; i < graph->listSize; i++){
                         if (countLengthBestPath[i] != 0) {
                             printf( " %d: %f ",i, countLengthBestPath[i]/totalCount );
                             for(int j = 0; j < countLengthBestPath[i]; j++){
@@ -188,11 +199,13 @@ void select_option(Graph* graph){
                         }
                     }
                     printf("\n");
+                    free(bestPathHeap);
                     break;
                 case 3:
                     break;
                 }
-                break;    
+                break; 
+                   
             case 4:
                 break;
            }

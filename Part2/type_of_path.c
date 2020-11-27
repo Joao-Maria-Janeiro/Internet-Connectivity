@@ -6,12 +6,12 @@
 #include "heap.h"
 #include "matrice_handler.h"
 
-int pathType(Graph * graph, int startVertex,int inputStartVertex ,int inputDestVertex, int* count) {
+int pathType(Graph * graph, int startVertex,int inputStartVertex ,int inputDestVertex, int* count, HeapNode * heap ) {
     int allocatedHeapSize = 500;
     int heapSize = 0;
     short toInsertSize = 0;
     //Todo(): Make function to free heap
-    HeapNode * heap = (HeapNode *) malloc(graph->listSize* sizeof(HeapNode));
+    // HeapNode * heap = (HeapNode *) malloc(graph->listSize* sizeof(HeapNode));
 
     int * parent = (int *)malloc(graph->listSize * sizeof(int)); // Array that tells the node where we came from
     int * previousHierarchy = (int *)malloc(graph->listSize * sizeof(int)); // Array that tells the hierarchy of the edge where we came from
@@ -32,7 +32,7 @@ int pathType(Graph * graph, int startVertex,int inputStartVertex ,int inputDestV
   	//Free arrays
     free(parent);
     free(previousHierarchy);
-    free(heap);
+    // free(heap);
 }
 
 int caminhoInverso(int caminho){
@@ -95,7 +95,7 @@ void *bfsPathType(Graph * graph, int startVertex,int inputStartVertex, int input
                 typeOfPath[VIA][tempListNode->neighbour] = startVertex;
                 HeapNode neighbourNode;
                 neighbourNode.node = tempListNode->neighbour;
-                neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy); //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
+                neighbourNode.previousHierarchy = tempListNode->hierarchy; //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
                 neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                 addToHeap(neighbourNode, heap, heapSize, allocatedHeapSize);
             }
@@ -108,7 +108,7 @@ void *bfsPathType(Graph * graph, int startVertex,int inputStartVertex, int input
                 typeOfPath[VIA][tempListNode->neighbour] = currentListNode.node;
                 HeapNode neighbourNode;
                 neighbourNode.node = tempListNode->neighbour;
-                neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy); //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
+                neighbourNode.previousHierarchy = tempListNode->hierarchy; //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
                 neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                 addToHeap(neighbourNode, heap, heapSize, allocatedHeapSize);
             }
