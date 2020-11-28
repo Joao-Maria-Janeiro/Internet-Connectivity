@@ -72,10 +72,6 @@ void select_option(Graph* graph){
 
                     for(int i = 1; i < 5; i++){
                         printf( " %d: %f ",i, count[i]/totalCount );
-                        for(int j = 0; j < count[i]; j++){
-                            printf( "| ");
-                            
-                        }
                         printf("\n");
                     }
                     printf("\n");
