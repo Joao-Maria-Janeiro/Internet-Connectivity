@@ -34,7 +34,7 @@ void select_option(Graph* graph){
                     count[i] = 0;
                 }
                 int option_1 = 0;
-                HeapNode * heap = (HeapNode *) malloc((graph->listSize)* sizeof(HeapNode));
+                
 
                 printf("Select your option:\n");
                 printf("1.From 1 node to another\n");
@@ -51,15 +51,15 @@ void select_option(Graph* graph){
                     printf("Select your destination vertex:");
                     scanf( "%d", &inputDestVertex);
 
-                    pathType(graph, inputDestVertex, inputStartVertex , inputDestVertex,  count,heap);
-                    free(heap);
+                    pathType(graph, inputDestVertex, inputStartVertex , inputDestVertex,  count);
+                   
                     break;
                 
                 case 2:
                 
                     for(int i = 0; i< graph->listSize; i++){
                         if ( graph->array[i].head != NULL){
-                            pathType(graph,  i, inputStartVertex , inputDestVertex,  count,heap);
+                            pathType(graph,  i, inputStartVertex , inputDestVertex,  count);
                         }
                     }
                     
@@ -75,12 +75,13 @@ void select_option(Graph* graph){
                         printf("\n");
                     }
                     printf("\n");
-                    free(heap);
+                    
                     break;
                 case 3:
                     break;
                 
                 }
+                
                 break;
                 
             case 2:

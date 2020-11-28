@@ -6,10 +6,11 @@
 #include "heap.h"
 #include "matrice_handler.h"
 
-int pathType(Graph * graph, int startVertex,int inputStartVertex ,int inputDestVertex, int* count, HeapNode * heap ) {
+int pathType(Graph * graph, int startVertex,int inputStartVertex ,int inputDestVertex, int* count ) {
     int allocatedHeapSize = 500;
     int heapSize = 0;
     short toInsertSize = 0;
+    HeapNode * heap = (HeapNode *) malloc((graph->listSize)* sizeof(HeapNode));
     //Todo(): Make function to free heap
     // HeapNode * heap = (HeapNode *) malloc(graph->listSize* sizeof(HeapNode));
 
@@ -32,7 +33,7 @@ int pathType(Graph * graph, int startVertex,int inputStartVertex ,int inputDestV
   	//Free arrays
     free(parent);
     free(previousHierarchy);
-    // free(heap);
+    free(heap);
 }
 
 int caminhoInverso(int caminho){
