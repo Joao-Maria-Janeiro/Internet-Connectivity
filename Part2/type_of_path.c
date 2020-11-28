@@ -101,7 +101,9 @@ void *bfsPathType(Graph * graph, int startVertex,int inputStartVertex, int input
             }
             //caso generico
             //se o vizinho não é o startvertex && caminho proposto é legal && caminho proposto melhora a situação do vizinho
-            else if((tempListNode->neighbour != startVertex) && (caminhosLegais[caminhoInverso(tempListNode->hierarchy) -1][typeOfPath[TYPE][currentListNode.node] - 1] != 4) && (caminhoInverso(tempListNode->hierarchy) < typeOfPath[TYPE][tempListNode->neighbour]) ){
+            else if((tempListNode->neighbour != startVertex) 
+            && (caminhosLegais[caminhoInverso(tempListNode->hierarchy) -1][typeOfPath[TYPE][currentListNode.node] - 1] != 4) 
+            && (caminhoInverso(tempListNode->hierarchy) < typeOfPath[TYPE][tempListNode->neighbour]) ){
                 //melhora o caminho do vizinho
                 //adiciona vizinho ao heap
                 typeOfPath[TYPE][tempListNode->neighbour] = caminhoInverso(tempListNode->hierarchy);

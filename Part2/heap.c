@@ -66,7 +66,6 @@ HeapNode popFromHeap(int *size, HeapNode * items){
   if(*size == 0){ //Caso em que o acervo está vazio damos return de -1
     HeapNode empty;
     empty.node=-1;
-    empty.neighbour=-1;
     empty.previousHierarchy = INT_MAX;
     return empty;
   }else{

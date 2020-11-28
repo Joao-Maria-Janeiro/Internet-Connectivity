@@ -7,7 +7,6 @@
 // A structure to represent an adjacency list node
 typedef struct HeapNode {
     int node;
-    int neighbour;
     int parent;
     int previousHierarchy;
     int pathLength;

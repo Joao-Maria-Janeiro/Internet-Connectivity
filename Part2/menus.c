@@ -91,7 +91,6 @@ void select_option(Graph* graph){
                 system("clear");
 
                 int *countLength = (int*)malloc(sizeof(int) * (graph->listSize));
-                HeapNode * lengthheap = (HeapNode *) malloc((graph->listSize)* sizeof(HeapNode));
                 
                 for(int i = 0; i < graph->listSize; i++){
                     countLength[i] = 0;
@@ -114,39 +113,27 @@ void select_option(Graph* graph){
                     printf("Select your destination vertex:");
                     scanf( "%d", &inputDestVertex);
                 
-                    pathLength(graph, inputDestVertex, inputStartVertex,inputDestVertex,countLength,lengthheap);
-                    free(lengthheap);
+                    pathLength(graph, inputStartVertex,inputDestVertex,countLength);
                     break;
 
                 case 2:
-
-                    for(int i = 0; i< graph->listSize; i++){
-                        if ( graph->array[i].head != NULL){
-                            
-                            pathLength(graph, i, inputStartVertex,inputDestVertex,countLength,lengthheap);
-                        }
-                    }
-                    printf("\n");
-                    for(int i = 0; i < graph->listSize; i++){
-                        totalCount += countLength[i];
-                    }
-
+                    totalCount = pathLength(graph, inputStartVertex,inputDestVertex,countLength);
                     for(int i = 1; i < graph->listSize; i++){
                         if (countLength[i] != 0) {
                             printf( " %d: %f ",i, countLength[i]/totalCount );
-                            for(int j = 0; j < countLength[i]; j++){
-                                printf( "| ");
+                            // for(int j = 0; j < countLength[i]; j++){
+                            //     printf( "| ");
                                 
-                            }
+                            // }
                             printf("\n");
                         }
                     }
                     printf("\n");
-                    free(lengthheap);
                     break;
                 case 3:
                     break;
                 }
+                free(countLength);
                 break;
 
             case 3:
