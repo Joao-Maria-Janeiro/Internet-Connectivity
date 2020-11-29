@@ -109,7 +109,12 @@ void select_option(Graph* graph){
                     totalCount = pathLength(graph, inputStartVertex,inputDestVertex,countLength,/*flag1time =*/ 0);
                     for(int i = 1; i < graph->listSize; i++){
                         if (countLength[i] != 0) {
-                            printf( " %d: %f ",i, countLength[i]/totalCount );
+                            int sum = 0;
+                            for(int j = 1; j <= i; j++){
+                                sum += countLength[j];
+                            }
+                            printf("sum %d \n", sum);
+                            printf( " %d: %f ",i, (1-(sum/totalCount)) );
                             printf("\n");
                         }
                     }
@@ -149,7 +154,12 @@ void select_option(Graph* graph){
                     
                     for(int i = 1; i < graph->listSize; i++){
                         if (countLengthBestPath[i] != 0) {
-                            printf( " %d: %f ",i, countLengthBestPath[i]/totalCount );
+                            int sumBestPath = 0;
+                            for(int j = 1; j <= i; j++){
+                                sumBestPath += countLengthBestPath[j];
+                            }
+                            printf("sum %d \n", sumBestPath);
+                            printf( " %d: %f ",i, (1-(sumBestPath/totalCount)) );
                             printf("\n");
                         }
                     }
