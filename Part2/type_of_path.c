@@ -26,6 +26,7 @@ int pathType(Graph * graph, int startVertex,int inputStartVertex ,int inputDestV
     parent[startVertex] = startVertex;
     previousHierarchy[startVertex] = 0;
 
+
     //djikstraToFindPathType(graph, startVertex, endVertex, parent, previousHierarchy, heap, &heapSize, &allocatedHeapSize, count, commercially_Connected);
     bfsPathType(graph, startVertex, inputStartVertex, inputDestVertex, heap, &heapSize, &allocatedHeapSize, count);
 

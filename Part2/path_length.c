@@ -123,6 +123,7 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
             //caso especial para o startvertex
             if(currentListNode.node == startVertex){ //so acontece da primeira vez
                 //melhora o caminho do vizinho
+                
                 typeOfPath[TYPE][tempListNode->neighbour] = caminhoInverso(tempListNode->hierarchy);
                 typeOfPath[LENGTH][tempListNode->neighbour] = 1;
                 BestPathHeapNode neighbourNode;
@@ -149,7 +150,7 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
                 //melhora o caminho do vizinho
                 //adiciona vizinho ao heap
                 typeOfPath[TYPE][tempListNode->neighbour] = caminhoInverso(tempListNode->hierarchy);
-                typeOfPath[LENGTH][tempListNode->neighbour] = typeOfPath[LENGTH][currentListNode.node] + 1;
+                typeOfPath[LENGTH][tempListNode->neighbour] = currentListNode.pathLength + 1;
                 BestPathHeapNode neighbourNode;
                 neighbourNode.node = tempListNode->neighbour;
                 neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy);//set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
@@ -168,7 +169,7 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
             else if((tempListNode->neighbour != startVertex) 
             && (caminhosLegais[caminhoInverso(tempListNode->hierarchy) -1][typeOfPath[TYPE][currentListNode.node] - 1] != 4) /* Valid path */
             && (caminhoInverso(tempListNode->hierarchy) == typeOfPath[TYPE][tempListNode->neighbour]) /* Same type of path */
-            && (typeOfPath[LENGTH][tempListNode->neighbour] > (currentListNode.pathLength + 1))) {  /* Shortest path */
+            && (typeOfPath[LENGTH][tempListNode->neighbour] > (typeOfPath[LENGTH][currentListNode.node] + 1))) {  /* Shortest path */
                
                 //melhora o caminho do vizinho
                 //adiciona vizinho ao heap
@@ -179,6 +180,7 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
                 neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy);//set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
                 neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                 neighbourNode.pathLength = currentListNode.pathLength + 1;
+                
                 if(typeOfPath[TYPE][tempListNode->neighbour]== 1){
                     bestPathAddToHeap(neighbourNode, heap1, &heapSize1, &allocatedHeapSize);
                 }
@@ -198,7 +200,8 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
     if(startVertex == inputDestinationVertex) {
         printf("The length of the path from %d to %d is %d and the type of the path is: %d\n", inputStartVertex, inputDestinationVertex, typeOfPath[LENGTH][inputStartVertex],typeOfPath[TYPE][inputStartVertex]);
     }
-    
+
+   
 }
 
 

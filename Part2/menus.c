@@ -5,7 +5,6 @@
 #include "best_path.h"
 
 void select_option(Graph* graph){
-    //printGraph(graph); 
     int option = 0;
     float totalCount = 0; 
     
