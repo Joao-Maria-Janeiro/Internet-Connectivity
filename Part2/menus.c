@@ -5,6 +5,7 @@
 #include "best_path.h"
 
 void select_option(Graph* graph){
+
     int option = 0;
     float totalCount = 0; 
     
@@ -50,24 +51,16 @@ void select_option(Graph* graph){
                     printf("Select your destination vertex:");
                     scanf( "%d", &inputDestVertex);
 
-                    pathType(graph, inputDestVertex, inputStartVertex , inputDestVertex,  count);
+                    pathType(graph,inputStartVertex , inputDestVertex,  count,  /*flag1time =*/1);
                    
                     break;
                 
                 case 2:
                 
-                    for(int i = 0; i< graph->listSize; i++){
-                        if ( graph->array[i].head != NULL){
-                            pathType(graph,  i, inputStartVertex , inputDestVertex,  count);
-                        }
-                    }
-                    
+                    totalCount = pathType(graph,inputStartVertex , inputDestVertex,  count,  /*flag1time =*/0);
                     printf("The Path Statistics for this Graph is:\n");
-
                     printf("\n");
-                    for(int i = 0; i < 5; i++){
-                        totalCount += count[i];
-                    }
+                   
 
                     for(int i = 1; i < 5; i++){
                         printf( " %d: %f ",i, count[i]/totalCount );
@@ -117,10 +110,6 @@ void select_option(Graph* graph){
                     for(int i = 1; i < graph->listSize; i++){
                         if (countLength[i] != 0) {
                             printf( " %d: %f ",i, countLength[i]/totalCount );
-                            // for(int j = 0; j < countLength[i]; j++){
-                            //     printf( "| ");
-                                
-                            // }
                             printf("\n");
                         }
                     }
@@ -136,7 +125,6 @@ void select_option(Graph* graph){
                 system("clear");
                 int option_3 = 0;
                 int *countLengthBestPath = (int*)malloc(sizeof(int) * (graph->listSize));
-                BestPathHeapNode * bestPathHeap = (BestPathHeapNode *) malloc((graph->listSize)* sizeof(BestPathHeapNode));
                 for(int i = 0; i < graph->listSize; i++){
                     countLengthBestPath[i] = 0;
                 }
@@ -154,39 +142,23 @@ void select_option(Graph* graph){
                     scanf( "%d", &inputStartVertex);
                     printf("Select your destination vertex:");
                     scanf( "%d", &inputDestVertex);
-                    bestPath( graph,  inputDestVertex,  inputStartVertex,  inputDestVertex , countLengthBestPath,bestPathHeap);
-                    free(bestPathHeap);
+                    bestPath( graph,  inputStartVertex,  inputDestVertex , countLengthBestPath, /*flag1Time = */1);
                     break;
                 case 2:
-                    for(int i = 0; i< graph->listSize; i++){
-                        if ( graph->array[i].head != NULL){
-                            
-                            // printf( "Iteração: %d \n",i);
-                            bestPath( graph, i, inputStartVertex, inputDestVertex , countLengthBestPath,bestPathHeap);
-                        }
-                    }
-                    printf("\n");
-
-                    for(int i = 0; i < graph->listSize; i++){
-                        totalCount += countLengthBestPath[i];
-                    }
+                    totalCount = bestPath( graph, inputStartVertex, inputDestVertex , countLengthBestPath, /*flag1Time = */0);
                     
                     for(int i = 1; i < graph->listSize; i++){
                         if (countLengthBestPath[i] != 0) {
                             printf( " %d: %f ",i, countLengthBestPath[i]/totalCount );
-                            for(int j = 0; j < countLengthBestPath[i]; j++){
-                                printf( "| ");
-                                
-                            }
                             printf("\n");
                         }
                     }
                     printf("\n");
-                    free(bestPathHeap);
                     break;
                 case 3:
                     break;
                 }
+                free(countLengthBestPath);
                 break; 
                    
             case 4:

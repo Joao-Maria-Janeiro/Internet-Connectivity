@@ -9,45 +9,16 @@
 
 
 
-int bestPath(Graph * graph, int startVertex, int inputStartVertex, int inputDestVertex , int * count, BestPathHeapNode * heap) {
+int bestPath(Graph * graph, int inputStartVertex, int inputDestVertex , int * count, int flag1Time) {
     int allocatedHeapSize = 500;
     int heapSize = 0;
     short toInsertSize = 0;
-    //Todo(): Make function to free heap
+    BestPathHeapNode * bestPathHeap = (BestPathHeapNode *) malloc((graph->listSize)* sizeof(BestPathHeapNode));
+
+    int i;
+    int total_paths = 0;
     
-
-    int * parent = (int *)malloc(graph->listSize * sizeof(int)); // Array that tells the node where we came from
-    
-    //Array initialization
-    for(int i = 0; i< graph->listSize; i++) {
-      parent[i] = -1;
-      
-    }
-
-    parent[startVertex] = startVertex;
-    bfsBestPath(graph,  startVertex, inputStartVertex, inputDestVertex,  heap,  &heapSize,  &allocatedHeapSize, count);
-    //djikstraToFindPathType(graph, startVertex, endVertex, parent, previousHierarchy, heap, &heapSize, &allocatedHeapSize, count, commercially_Connected);
-    //djikstraToFindPathLength(graph, startVertex, heap, &heapSize, &allocatedHeapSize, count);
-
-    
-  	//Free arrays
-    free(parent);
-    // free(heap);s
-}
-
-void *bfsBestPath(Graph * graph, int startVertex, int inputStartVertex, int inputDestVertex , BestPathHeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count) {
-   
-    AdjListNode* tempListNode = graph->array[startVertex].head;
-    BestPathHeapNode currentListNode;
-    currentListNode.node = tempListNode->node;
-    currentListNode.parent = tempListNode->node;
-    currentListNode.previousHierarchy = -1;
-    currentListNode.pathLength = 0;
-    bestPathAddToHeap(currentListNode, heap, heapSize, allocatedHeapSize);
-
     int **caminhosLegais;
-    int i = 0;
-
     caminhosLegais = (int**)malloc(sizeof(int*)*3);
     for(i= 0; i<3; i++)
         caminhosLegais[i] = (int*) malloc(sizeof(int)*3);
@@ -60,25 +31,74 @@ void *bfsBestPath(Graph * graph, int startVertex, int inputStartVertex, int inpu
     int** community_path = (int**)malloc(sizeof(int*)*2);
     for(i= 0; i<2; i++)
         community_path[i] = (int*) malloc(sizeof(int)*graph->listSize);
-
-   
-
     for(i=0; i<2; i++){
         for(int k = 0; k<graph->listSize; k++)
             community_path[i][k] = 9999; //mais infinito
     }
    
-
     int** private_path = (int**)malloc(sizeof(int*)*2);
     for(i= 0; i<2; i++)
         private_path[i] = (int*) malloc(sizeof(int)*graph->listSize);
-
-
     for(i=0; i<2; i++){
         for(int k = 0; k<graph->listSize; k++)
             private_path[i][k] = 9999; //mais infinito
     }
    
+    int TYPE = 0;
+    int LENGTH = 1;
+    
+    if(flag1Time){
+        bfsBestPath(graph,  inputDestVertex, inputStartVertex, inputDestVertex,  bestPathHeap,  &heapSize,  &allocatedHeapSize, count, caminhosLegais, community_path, private_path);
+    }
+    else{
+        for(int i = 0; i< graph->listSize; i++){
+            if ( graph->array[i].head != NULL){
+                bfsBestPath(graph, i, inputStartVertex, inputDestVertex,  bestPathHeap,  &heapSize,  &allocatedHeapSize, count, caminhosLegais, community_path, private_path);
+                for(int k = 0; k<graph->listSize; k++){
+                    if(private_path[LENGTH][k] != 9999){
+                        count[private_path[LENGTH][k]] += 1;
+                        total_paths ++;
+                    }
+                    private_path[TYPE][k] = 9999;
+                    private_path[LENGTH][k] = 9999; //mais infinito
+                    community_path[TYPE][k] = 9999;
+                    community_path[LENGTH][k] = 9999; //mais infinito
+                }
+
+            }
+        }
+    }
+  
+
+    //FREEE
+    for (i= 0; i <3 ; i++){
+        free(caminhosLegais[i]);
+    }
+    free(caminhosLegais);
+    free(private_path[0]);
+    free(private_path[1]);
+    free(private_path);
+    free(community_path[0]);
+    free(community_path[1]);
+    free(community_path);
+    free(bestPathHeap);
+
+    return total_paths;
+    
+}
+
+void bfsBestPath(Graph * graph, int startVertex, int inputStartVertex, int inputDestVertex , BestPathHeapNode * heap, int * heapSize, int * allocatedHeapSize, int* count, int **caminhosLegais, int **community_path, int **private_path) {
+   
+    AdjListNode* tempListNode = graph->array[startVertex].head;
+    BestPathHeapNode currentListNode;
+    currentListNode.node = tempListNode->node;
+    currentListNode.parent = tempListNode->node;
+    currentListNode.previousHierarchy = -1;
+    currentListNode.pathLength = 0;
+    bestPathAddToHeap(currentListNode, heap, heapSize, allocatedHeapSize);
+
+    int i;
+
     int TYPE = 0;
     int LENGTH = 1;
 
@@ -181,17 +201,6 @@ void *bfsBestPath(Graph * graph, int startVertex, int inputStartVertex, int inpu
     if(startVertex == inputDestVertex) {
         printf("The length of the shortest BGP path from %d to %d is: %d and the the type of the path is: %d \n",inputStartVertex,inputDestVertex, private_path[LENGTH][inputStartVertex],  private_path[TYPE][inputStartVertex]);
     }
-
-    for(int i = 1; i < graph->listSize; i++ ) {
-        if(private_path[LENGTH][i] != 9999)
-            count[private_path[LENGTH][i]]++;    
-    }
-
-    free(caminhosLegais);
-    free(private_path[0]);
-    free(private_path[1]);
-    free(community_path[0]);
-    free(community_path[1]);
 
 }
 
