@@ -58,7 +58,7 @@ void select_option(Graph* graph){
                 case 2:
                 
                     totalCount = pathType(graph,inputStartVertex , inputDestVertex,  count,  /*flag1time =*/0);
-                    printf("The Path Statistics for this Graph is:\n");
+                    printf("The Path Statistics for this Graph are:\n");
                     printf("\n");
                    
 
@@ -107,13 +107,13 @@ void select_option(Graph* graph){
 
                 case 2:
                     totalCount = pathLength(graph, inputStartVertex,inputDestVertex,countLength,/*flag1time =*/ 0);
+                    printf("Complementary cumulative distribution function of the lengths\n");
                     for(int i = 1; i < graph->listSize; i++){
                         if (countLength[i] != 0) {
                             int sum = 0;
                             for(int j = 1; j <= i; j++){
                                 sum += countLength[j];
                             }
-                            printf("sum %d \n", sum);
                             printf( " %d: %f ",i, (1-(sum/totalCount)) );
                             printf("\n");
                         }
@@ -151,14 +151,13 @@ void select_option(Graph* graph){
                     break;
                 case 2:
                     totalCount = bestPath( graph, inputStartVertex, inputDestVertex , countLengthBestPath, /*flag1Time = */0);
-                    
+                    printf("Complementary cumulative distribution function \n");
                     for(int i = 1; i < graph->listSize; i++){
                         if (countLengthBestPath[i] != 0) {
                             int sumBestPath = 0;
                             for(int j = 1; j <= i; j++){
                                 sumBestPath += countLengthBestPath[j];
                             }
-                            printf("sum %d \n", sumBestPath);
                             printf( " %d: %f ",i, (1-(sumBestPath/totalCount)) );
                             printf("\n");
                         }

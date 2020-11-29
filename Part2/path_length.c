@@ -62,7 +62,7 @@ int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * 
             }
         }
     }
-    
+
     for (i= 0; i <3 ; i++){
         free(caminhosLegais[i]);
     }
@@ -77,9 +77,6 @@ int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * 
     return total_paths;
 }
 
-
-
-/*tal como no djikstraToFindPathType, o heap guarda os nós que foram atualizados por prioridade de tipo de caminho*/
  
 void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int inputDestinationVertex, BestPathHeapNode * heap1,BestPathHeapNode * heap2, BestPathHeapNode* heap3 ,int ** typeOfPath, int **caminhosLegais) {
 
@@ -104,7 +101,6 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
 
 
 
-    //ESTA É A PARTE IMPORTANTE
     while(((heapSize1) != 0) || ((heapSize2) != 0) || ((heapSize3) != 0)){
         if(heapSize1 != 0){
             currentListNode = bestPathPopFromHeap(&heapSize1, heap1);
@@ -117,7 +113,6 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
         }
         tempListNode = graph->array[currentListNode.node].head;
         while (tempListNode) {
-            // printf(" %d %d %d %d %d %d\n", currentListNode.node, tempListNode->neighbour, typeOfPath[LENGTH][tempListNode->neighbour] , currentListNode.pathLength + 1, caminhoInverso(tempListNode->hierarchy), typeOfPath[TYPE][tempListNode->neighbour]);
             //ve se pode melhorar os caminhos do vizinho, se os melhora, coloca-os no heap
             //verifica se pode melhorar && caminho resultante é legal
             //caso especial para o startvertex

@@ -104,7 +104,7 @@ void bfsBestPath(Graph * graph, int startVertex, int inputStartVertex, int input
 
     int FLAG = 0;
 
-    //ESTA É A PARTE IMPORTANTE
+   
     while((*heapSize) != 0){
         currentListNode = bestPathPopFromHeap(heapSize, heap);
         tempListNode = graph->array[currentListNode.node].head;
@@ -129,7 +129,6 @@ void bfsBestPath(Graph * graph, int startVertex, int inputStartVertex, int input
             else{
                 //COMMUNITY
                 //se o vizinho não é o startvertex && caminho proposto é legal && caminho proposto melhora o LENGTH comunitario do vizinho
-                // printf("Is legal %d, current path LENGTH %d, neighbour %d community LENGTH %d \n",caminhosLegais[caminhoInverso(tempListNode->hierarchy) -1][currentListNode.previousHierarchy - 1], currentListNode.pathLength + 1, tempListNode->neighbour,  community_path[LENGTH][tempListNode->neighbour]);
                 if((tempListNode->neighbour != startVertex)
                         && (caminhosLegais[caminhoInverso(tempListNode->hierarchy) -1][currentListNode.previousHierarchy - 1] != 4) 
                         && ((currentListNode.pathLength + 1) < community_path[LENGTH][tempListNode->neighbour]) ) {
@@ -194,10 +193,6 @@ void bfsBestPath(Graph * graph, int startVertex, int inputStartVertex, int input
         }
     }
 
-    // for(i= 1; i<graph->listSize; i++){
-    //     printf("no %d tipo %d comprimento %d \n",i,  private_path[TYPE][i], private_path[LENGTH][i]);
-    // }
-   
     if(startVertex == inputDestVertex) {
         printf("The length of the shortest BGP path from %d to %d is: %d and the the type of the path is: %d \n",inputStartVertex,inputDestVertex, private_path[LENGTH][inputStartVertex],  private_path[TYPE][inputStartVertex]);
     }

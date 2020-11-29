@@ -1,3 +1,18 @@
+/*************************************
+ * Network Algorithms and Performance
+ * ADRC 20/21
+ * 
+ * Authors :
+ * Joao Maria Janeiro - 90105
+ * Miguel Figueira - 90144
+ * Pedro Guerreiro - 90161
+ *
+ * *******************************/
+
+
+
+
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -24,10 +39,6 @@ int checkFileName(int argc, char * fileName) {
         printf("Too many arguments\n");
         exit(1);
     }
-    // if(strstr(fileName, ".inet") == 0) {
-    //     printf("Wrong file extension");
-    //     exit(1);
-    // }
 }
 
 
