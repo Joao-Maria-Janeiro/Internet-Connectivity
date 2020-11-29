@@ -120,7 +120,7 @@ void heapifyDown(int size, HeapNode * items){
 
 void printHeap(int size, HeapNode * items) {
   for(int i=0; i<size; i++) {
-    printf("(%d) -> %d\n", items[i].node, items[i].previousHierarchy);
+    printf("(%d) -> %d \t %d \n", items[i].node, items[i].previousHierarchy, items[i].pathLength);
   }
 }
 
@@ -158,7 +158,6 @@ BestPathHeapNode bestPathPopFromHeap(int *size, BestPathHeapNode * items){
   if(*size == 0){ //Caso em que o acervo está vazio damos return de -1
     BestPathHeapNode empty;
     empty.node=-1;
-    empty.neighbour=-1;
     empty.pathLength = INT_MAX;
     return empty;
   }else{

@@ -6,7 +6,7 @@
 #include "matrice_handler.h"
 #include "type_of_path.h"
 
-int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * count);
-void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int inputDestinationVertex, HeapNode * heap, int ** typeOfPath, int **caminhosLegais);
+int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * count, int flag1Time);
+void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int inputDestinationVertex, BestPathHeapNode * heap1, BestPathHeapNode* heap2, BestPathHeapNode * heap3 ,int ** typeOfPath, int **caminhosLegais);
 
 #endif

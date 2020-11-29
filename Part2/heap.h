@@ -14,7 +14,6 @@ typedef struct HeapNode {
 
 typedef struct BestPathHeapNode {
     int node;
-    int neighbour;
     int parent;
     int pathLength;
     int previousHierarchy;

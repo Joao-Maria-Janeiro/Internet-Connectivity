@@ -9,11 +9,13 @@
 
 
 
-int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * count) {
+int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * count, int flag1Time) {
     int allocatedHeapSize = graph->listSize;
-    int heapSize = 0;
+   
     short toInsertSize = 0;
-    HeapNode * heap = (HeapNode *) malloc(graph->listSize* sizeof(HeapNode));
+    BestPathHeapNode * heapType1 = (BestPathHeapNode *) malloc((2*graph->listSize)* sizeof(BestPathHeapNode));
+    BestPathHeapNode * heapType2 = (BestPathHeapNode *) malloc((2*graph->listSize)* sizeof(BestPathHeapNode));
+    BestPathHeapNode * heapType3 = (BestPathHeapNode *) malloc((3*graph->listSize)* sizeof(BestPathHeapNode));
 
     int **caminhosLegais;
     int i = 0;
@@ -41,19 +43,24 @@ int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * 
     int TYPE = 0;
     int LENGTH = 1;
 
-    for(int i = 0; i< graph->listSize; i++){
-        if (i%1000 == 0) printf("iter: %d \n", i);
-        if ( graph->array[i].head != NULL){
-            bfsPathLength(graph, i, inputStartVertex, inputDestVertex, heap, typeOfPath, caminhosLegais);
-            for(k = 0; k<graph->listSize; k++){
-                if(typeOfPath[LENGTH][k] != 9999){
-                    count[typeOfPath[LENGTH][k]] += 1;
-                    total_paths ++;
+    if(flag1Time){
+        bfsPathLength(graph, inputDestVertex, inputStartVertex, inputDestVertex, heapType1, heapType2, heapType3, typeOfPath, caminhosLegais);
+    }
+    else{
+        for(int i = 0; i< graph->listSize; i++){
+            if (i%1000 == 0) printf("iter: %d \n", i);
+            if ( graph->array[i].head != NULL){
+                bfsPathLength(graph, i, inputStartVertex, inputDestVertex, heapType1, heapType2, heapType3, typeOfPath, caminhosLegais);
+                for(k = 0; k<graph->listSize; k++){
+                    if(typeOfPath[LENGTH][k] != 9999){
+                        count[typeOfPath[LENGTH][k]] += 1;
+                        total_paths ++;
+                    }
+                    typeOfPath[TYPE][k] = 9999;
+                    typeOfPath[LENGTH][k] = 9999; //mais infinito
                 }
-                typeOfPath[TYPE][k] = 9999;
-                typeOfPath[LENGTH][k] = 9999; //mais infinito
-            }
 
+            }
         }
     }
     for (i= 0; i <3 ; i++){
@@ -63,7 +70,9 @@ int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * 
     free(typeOfPath[0]);
     free(typeOfPath[1]);
     free(typeOfPath);
-    free(heap);
+    free(heapType1);
+    free(heapType2);
+    free(heapType3);
 
     return total_paths;
 }
@@ -72,20 +81,22 @@ int pathLength(Graph * graph, int inputStartVertex, int inputDestVertex , int * 
 
 /*tal como no djikstraToFindPathType, o heap guarda os nós que foram atualizados por prioridade de tipo de caminho*/
  
-void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int inputDestinationVertex, HeapNode * heap, int ** typeOfPath, int **caminhosLegais) {
+void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int inputDestinationVertex, BestPathHeapNode * heap1,BestPathHeapNode * heap2, BestPathHeapNode* heap3 ,int ** typeOfPath, int **caminhosLegais) {
 
     
-    int heapSize = 0;
+    int heapSize1 = 0;
+    int heapSize2 = 0;
+    int heapSize3 = 0;
     int allocatedHeapSize = graph->listSize;
     
     
     AdjListNode* tempListNode = graph->array[startVertex].head;
-    HeapNode currentListNode;
+    BestPathHeapNode currentListNode;
     currentListNode.node = tempListNode->node;
     currentListNode.parent = tempListNode->node;
     currentListNode.previousHierarchy = -1;
     currentListNode.pathLength = 0;
-    addToHeap(currentListNode, heap, &heapSize, &allocatedHeapSize);
+    bestPathAddToHeap(currentListNode, heap1, &heapSize1, &allocatedHeapSize);
 
     
     int TYPE = 0;
@@ -94,8 +105,16 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
 
 
     //ESTA É A PARTE IMPORTANTE
-    while((heapSize) != 0){
-        currentListNode = popFromHeap(&heapSize, heap);
+    while(((heapSize1) != 0) || ((heapSize2) != 0) || ((heapSize3) != 0)){
+        if(heapSize1 != 0){
+            currentListNode = bestPathPopFromHeap(&heapSize1, heap1);
+        }
+        else if (heapSize2 != 0){
+            currentListNode = bestPathPopFromHeap(&heapSize2, heap2);
+        }
+        else {
+            currentListNode = bestPathPopFromHeap(&heapSize3, heap3);
+        }
         tempListNode = graph->array[currentListNode.node].head;
         while (tempListNode) {
             // printf(" %d %d %d %d %d %d\n", currentListNode.node, tempListNode->neighbour, typeOfPath[LENGTH][tempListNode->neighbour] , currentListNode.pathLength + 1, caminhoInverso(tempListNode->hierarchy), typeOfPath[TYPE][tempListNode->neighbour]);
@@ -106,14 +125,23 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
                 //melhora o caminho do vizinho
                 typeOfPath[TYPE][tempListNode->neighbour] = caminhoInverso(tempListNode->hierarchy);
                 typeOfPath[LENGTH][tempListNode->neighbour] = 1;
-                HeapNode neighbourNode;
+                BestPathHeapNode neighbourNode;
                 neighbourNode.node = tempListNode->neighbour;
                 neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy); //set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
                 neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                 neighbourNode.pathLength = 1;
-                addToHeap(neighbourNode, heap, &heapSize, &allocatedHeapSize);
+                if(typeOfPath[TYPE][tempListNode->neighbour]== 1){
+                    bestPathAddToHeap(neighbourNode, heap1, &heapSize1, &allocatedHeapSize);
+                }
+                else if(typeOfPath[TYPE][tempListNode->neighbour]== 2){
+                    bestPathAddToHeap(neighbourNode, heap2, &heapSize2, &allocatedHeapSize);
+                }
+                else if(typeOfPath[TYPE][tempListNode->neighbour]== 3){
+                    bestPathAddToHeap(neighbourNode, heap3, &heapSize3, &allocatedHeapSize);
+                }
+  
             }
-            //caso generico
+            //caso generico 
             //se o vizinho não é o startvertex && caminho proposto é legal && caminho proposto melhora a situação do vizinho
             else if((tempListNode->neighbour != startVertex) 
             && (caminhosLegais[caminhoInverso(tempListNode->hierarchy) -1][typeOfPath[TYPE][currentListNode.node] - 1] != 4) /* Valid path */
@@ -122,27 +150,44 @@ void *bfsPathLength(Graph * graph, int startVertex, int inputStartVertex, int in
                 //adiciona vizinho ao heap
                 typeOfPath[TYPE][tempListNode->neighbour] = caminhoInverso(tempListNode->hierarchy);
                 typeOfPath[LENGTH][tempListNode->neighbour] = typeOfPath[LENGTH][currentListNode.node] + 1;
-                HeapNode neighbourNode;
+                BestPathHeapNode neighbourNode;
                 neighbourNode.node = tempListNode->neighbour;
                 neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy);//set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
                 neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                 neighbourNode.pathLength = currentListNode.pathLength + 1;
-                addToHeap(neighbourNode, heap, &heapSize, &allocatedHeapSize);
+                if(typeOfPath[TYPE][tempListNode->neighbour]== 1){
+                    bestPathAddToHeap(neighbourNode, heap1, &heapSize1, &allocatedHeapSize);
+                }
+                else if(typeOfPath[TYPE][tempListNode->neighbour]== 2){
+                    bestPathAddToHeap(neighbourNode, heap2, &heapSize2, &allocatedHeapSize);
+                }
+                else if(typeOfPath[TYPE][tempListNode->neighbour]== 3){
+                    bestPathAddToHeap(neighbourNode, heap3, &heapSize3, &allocatedHeapSize);
+                }
             } 
             else if((tempListNode->neighbour != startVertex) 
             && (caminhosLegais[caminhoInverso(tempListNode->hierarchy) -1][typeOfPath[TYPE][currentListNode.node] - 1] != 4) /* Valid path */
             && (caminhoInverso(tempListNode->hierarchy) == typeOfPath[TYPE][tempListNode->neighbour]) /* Same type of path */
             && (typeOfPath[LENGTH][tempListNode->neighbour] > (currentListNode.pathLength + 1))) {  /* Shortest path */
+               
                 //melhora o caminho do vizinho
                 //adiciona vizinho ao heap
                 typeOfPath[TYPE][tempListNode->neighbour] = caminhoInverso(tempListNode->hierarchy);
                 typeOfPath[LENGTH][tempListNode->neighbour] = currentListNode.pathLength + 1;
-                HeapNode neighbourNode;
+                BestPathHeapNode neighbourNode;
                 neighbourNode.node = tempListNode->neighbour;
                 neighbourNode.previousHierarchy = caminhoInverso(tempListNode->hierarchy);//set neighbour's previousHierarchy as the current neighbour hierarchy, for future reference
                 neighbourNode.parent = currentListNode.node; //set neighbour's parent as the the node where it came from
                 neighbourNode.pathLength = currentListNode.pathLength + 1;
-                addToHeap(neighbourNode, heap, &heapSize, &allocatedHeapSize);
+                if(typeOfPath[TYPE][tempListNode->neighbour]== 1){
+                    bestPathAddToHeap(neighbourNode, heap1, &heapSize1, &allocatedHeapSize);
+                }
+                else if(typeOfPath[TYPE][tempListNode->neighbour]== 2){
+                    bestPathAddToHeap(neighbourNode, heap2, &heapSize2, &allocatedHeapSize);
+                }
+                else if(typeOfPath[TYPE][tempListNode->neighbour]== 3){
+                    bestPathAddToHeap(neighbourNode, heap3, &heapSize3, &allocatedHeapSize);
+                }
             }
 
 

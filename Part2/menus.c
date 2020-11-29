@@ -109,12 +109,12 @@ void select_option(Graph* graph){
                     scanf( "%d", &inputStartVertex);
                     printf("Select your destination vertex:");
                     scanf( "%d", &inputDestVertex);
-                
-                    pathLength(graph, inputStartVertex,inputDestVertex,countLength);
+
+                    pathLength(graph, inputStartVertex,inputDestVertex,countLength, /*flag1time =*/1); 
                     break;
 
                 case 2:
-                    totalCount = pathLength(graph, inputStartVertex,inputDestVertex,countLength);
+                    totalCount = pathLength(graph, inputStartVertex,inputDestVertex,countLength,/*flag1time =*/ 0);
                     for(int i = 1; i < graph->listSize; i++){
                         if (countLength[i] != 0) {
                             printf( " %d: %f ",i, countLength[i]/totalCount );
